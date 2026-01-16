@@ -13,7 +13,9 @@ import {
   Banknote,
   ArrowRight,
   Check,
+  AlertTriangle,
 } from "lucide-react";
+import { ReportProblemModal } from "@/components/dashboard/report-problem-modal";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -102,6 +104,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
   const router = useRouter();
   const [showDetails, setShowDetails] = useState(false);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [showReportProblem, setShowReportProblem] = useState(false);
 
   const toggleImageSelection = (imgUrl: string) => {
     setSelectedImages((prev) =>
@@ -383,6 +386,13 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
           </div>
         </div>
 
+        {/* Report Problem Modal */}
+        <ReportProblemModal
+          open={showReportProblem}
+          onOpenChange={setShowReportProblem}
+          orderId="284-9321"
+        />
+
         {/* Footer Actions */}
         <div className="bg-white p-5 pt-2 pb-5 border-t border-slate-50 flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-4">
@@ -397,6 +407,13 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
               Accept Order <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
+          <button
+            onClick={() => setShowReportProblem(true)}
+            className="flex items-center justify-center gap-2 text-red-500 hover:text-red-600 text-sm font-medium transition-colors"
+          >
+            <AlertTriangle className="h-4 w-4" />
+            Report Problem
+          </button>
           <p className="text-center text-[10px] text-slate-400 font-medium">
             By accepting, you agree to fulfill the order within the specified
             window.

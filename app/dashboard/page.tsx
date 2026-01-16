@@ -45,10 +45,10 @@ export default function DashboardPage() {
       {/* Notification Toast */}
       <div
         className={cn(
-          "fixed top-4 right-4 z-50 transition-all duration-500 transform",
+          "fixed top-4 left-1/2 z-50 transition-all duration-500 transform -translate-x-1/2",
           showNotification
-            ? "translate-x-0 opacity-100"
-            : "translate-x-full opacity-0 pointer-events-none"
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-95 pointer-events-none"
         )}
       >
         <div className="bg-white rounded-xl shadow-2xl border border-slate-200 p-4 w-[380px] overflow-hidden">
