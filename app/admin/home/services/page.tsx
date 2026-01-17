@@ -1,12 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Palette, GripVertical, Save } from "lucide-react";
+import { Eye, EyeOff, Palette, GripVertical, Save, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const services = [
   {
@@ -16,6 +24,7 @@ const services = [
     color: "#3E8940",
     visible: true,
     order: 1,
+    types: ["Wash"],
   },
   {
     id: 2,
@@ -24,6 +33,7 @@ const services = [
     color: "#4A90D9",
     visible: true,
     order: 2,
+    types: ["Wash", "Iron"],
   },
   {
     id: 3,
@@ -32,6 +42,7 @@ const services = [
     color: "#9B59B6",
     visible: true,
     order: 3,
+    types: ["Dry Clean"],
   },
   {
     id: 4,
@@ -40,6 +51,7 @@ const services = [
     color: "#E67E22",
     visible: true,
     order: 4,
+    types: ["Iron"],
   },
   {
     id: 5,
@@ -48,6 +60,7 @@ const services = [
     color: "#F1C40F",
     visible: false,
     order: 5,
+    types: ["Wash", "Dry Clean", "Iron"],
   },
   {
     id: 6,
@@ -56,22 +69,67 @@ const services = [
     color: "#1ABC9C",
     visible: false,
     order: 6,
+    types: ["Wash"],
   },
 ];
 
 export default function ServicesGridPage() {
   const [serviceList, setServiceList] = useState(services);
   const [saved, setSaved] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newService, setNewService] = useState({
+    name: "",
+    icon: "🧺",
+    color: "#3E8940",
+    types: [] as string[],
+  });
 
   const toggleVisibility = (id: number) => {
     setServiceList((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, visible: !s.visible } : s))
+      prev.map((s) => (s.id === id ? { ...s, visible: !s.visible } : s)),
     );
   };
 
   const handleSave = () => {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleAddService = () => {
+    if (!newService.name) return;
+
+    const newId = Math.max(...serviceList.map((s) => s.id)) + 1;
+    const newOrder = Math.max(...serviceList.map((s) => s.order)) + 1;
+
+    setServiceList((prev) => [
+      ...prev,
+      {
+        id: newId,
+        name: newService.name,
+        icon: newService.icon,
+        color: newService.color,
+        visible: true,
+        order: newOrder,
+        types: newService.types,
+      },
+    ]);
+
+    setNewService({
+      name: "",
+      icon: "🧺",
+      color: "#3E8940",
+      types: [],
+    });
+    setIsDialogOpen(false);
+  };
+
+  const toggleServiceType = (type: string) => {
+    setNewService((prev) => {
+      const types = prev.types.includes(type)
+        ? prev.types.filter((t) => t !== type)
+        : [...prev.types, type];
+      return { ...prev, types };
+    });
   };
 
   return (
@@ -86,13 +144,23 @@ export default function ServicesGridPage() {
             Control which services appear on the home screen
           </p>
         </div>
-        <Button
-          className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80"
-          onClick={handleSave}
-        >
-          <Save className="h-4 w-4" />
-          {saved ? "Saved!" : "Save Changes"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Add Service
+          </Button>
+          <Button
+            className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80"
+            onClick={handleSave}
+          >
+            <Save className="h-4 w-4" />
+            {saved ? "Saved!" : "Save Changes"}
+          </Button>
+        </div>
       </div>
 
       {/* Services Grid */}
@@ -129,6 +197,17 @@ export default function ServicesGridPage() {
                     {service.color}
                   </span>
                 </div>
+                <div className="hidden sm:flex gap-1">
+                  {service.types?.map((type) => (
+                    <Badge
+                      key={type}
+                      variant="outline"
+                      className="text-[10px] h-5 px-1.5"
+                    >
+                      {type}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -163,7 +242,89 @@ export default function ServicesGridPage() {
           <li>• Click Edit to change icon and color</li>
         </ul>
       </div>
+
+      {/* Add Service Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Service</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Service Name</Label>
+              <Input
+                placeholder="e.g., Rug Cleaning"
+                value={newService.name}
+                onChange={(e) =>
+                  setNewService({ ...newService, name: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Icon (Emoji)</Label>
+                <Input
+                  placeholder="e.g., 🧺"
+                  value={newService.icon}
+                  onChange={(e) =>
+                    setNewService({ ...newService, icon: e.target.value })
+                  }
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label>Color (Hex)</Label>
+                <div className="flex gap-2 mt-1">
+                  <div
+                    className="w-10 h-10 rounded-md border shadow-sm shrink-0"
+                    style={{ backgroundColor: newService.color }}
+                  />
+                  <Input
+                    placeholder="#3E8940"
+                    value={newService.color}
+                    onChange={(e) =>
+                      setNewService({ ...newService, color: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <Label className="mb-2 block">Service Types</Label>
+              <div className="flex gap-4">
+                {["Wash", "Iron", "Dry Clean"].map((type) => (
+                  <div key={type} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`type-${type}`}
+                      checked={newService.types.includes(type)}
+                      onCheckedChange={() => toggleServiceType(type)}
+                    />
+                    <label
+                      htmlFor={`type-${type}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {type}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={handleAddService}
+            >
+              Add Service
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-

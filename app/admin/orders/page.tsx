@@ -144,11 +144,53 @@ const getStatusIcon = (status: string) => {
   }
 };
 
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
+// ... existing imports
+
 export default function OrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [orderList, setOrderList] = useState(orders);
 
-  const filteredOrders = orders.filter((order) => {
+  // Dialog States
+  const [selectedOrder, setSelectedOrder] = useState<(typeof orders)[0] | null>(
+    null,
+  );
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isReassignOpen, setIsReassignOpen] = useState(false);
+  const [newVendor, setNewVendor] = useState("");
+
+  const handleViewDetails = (order: (typeof orders)[0]) => {
+    setSelectedOrder(order);
+    setIsDetailsOpen(true);
+  };
+
+  const handleReassignClick = (order: (typeof orders)[0]) => {
+    setSelectedOrder(order);
+    setNewVendor(""); // Reset
+    setIsReassignOpen(true);
+  };
+
+  const handleReassignConfirm = () => {
+    if (selectedOrder && newVendor) {
+      setOrderList((prev) =>
+        prev.map((o) =>
+          o.id === selectedOrder.id ? { ...o, vendor: newVendor } : o,
+        ),
+      );
+      setIsReassignOpen(false);
+    }
+  };
+
+  const filteredOrders = orderList.filter((order) => {
     const matchesSearch =
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -163,7 +205,7 @@ export default function OrdersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
+      {/* ... Header, Stats, Filters ... */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl text-black font-bold tracking-tight">
@@ -184,25 +226,26 @@ export default function OrdersPage() {
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-5">
         {[
-          { label: "Total", value: orders.length, color: "text-slate-700" },
+          { label: "Total", value: orderList.length, color: "text-slate-700" },
           {
             label: "Pending",
-            value: orders.filter((o) => o.status === "Pending").length,
+            value: orderList.filter((o) => o.status === "Pending").length,
             color: "text-blue-600",
           },
           {
             label: "Processing",
-            value: orders.filter((o) => o.status === "Processing").length,
+            value: orderList.filter((o) => o.status === "Processing").length,
             color: "text-yellow-600",
           },
           {
             label: "Delivered",
-            value: orders.filter((o) => o.status === "Delivered").length,
+            value: orderList.filter((o) => o.status === "Delivered").length,
             color: "text-green-600",
           },
           {
             label: "Issues",
-            value: orders.filter((o) => o.status === "Issue Reported").length,
+            value: orderList.filter((o) => o.status === "Issue Reported")
+              .length,
             color: "text-red-600",
           },
         ].map((stat) => (
@@ -296,7 +339,7 @@ export default function OrdersPage() {
                 <TableCell>
                   <Badge
                     className={`${getStatusColor(
-                      order.status
+                      order.status,
                     )} border-none font-medium gap-1.5`}
                   >
                     {getStatusIcon(order.status)}
@@ -317,10 +360,16 @@ export default function OrdersPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="gap-2">
+                      <DropdownMenuItem
+                        className="gap-2"
+                        onClick={() => handleViewDetails(order)}
+                      >
                         <Eye className="h-4 w-4" /> View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="gap-2">
+                      <DropdownMenuItem
+                        className="gap-2"
+                        onClick={() => handleReassignClick(order)}
+                      >
                         <RefreshCcw className="h-4 w-4" /> Reassign Vendor
                       </DropdownMenuItem>
                       {order.status === "Issue Reported" && (
@@ -335,6 +384,7 @@ export default function OrdersPage() {
             ))}
           </TableBody>
         </Table>
+        {/* Pagination - kept static for now */}
         <div className="flex items-center justify-between p-4 border-t">
           <p className="text-sm text-slate-500">
             Showing {filteredOrders.length} of {orders.length} orders
@@ -349,7 +399,137 @@ export default function OrdersPage() {
           </div>
         </div>
       </div>
+
+      {/* Order Details Dialog */}
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Order Details{" "}
+              <span className="text-slate-500 ml-2">#{selectedOrder?.id}</span>
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedOrder && (
+            <div className="space-y-4 py-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-xs text-slate-500 uppercase">
+                    Customer
+                  </Label>
+                  <p className="font-medium text-sm">
+                    {selectedOrder.customer}
+                  </p>
+                  <p className="text-xs text-slate-400">
+                    {selectedOrder.customerPhone}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-slate-500 uppercase">
+                    Vendor
+                  </Label>
+                  <p className="font-medium text-sm">{selectedOrder.vendor}</p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs text-slate-500 uppercase">
+                  Items
+                </Label>
+                <div className="p-3 bg-slate-50 rounded-md text-sm border">
+                  {selectedOrder.items}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-xs text-slate-500 uppercase">
+                    Status
+                  </Label>
+                  <div>
+                    <Badge
+                      className={`${getStatusColor(selectedOrder.status)} border-none mt-1`}
+                    >
+                      {selectedOrder.status}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-slate-500 uppercase">
+                    Total Amount
+                  </Label>
+                  <p className="font-bold text-lg text-black">
+                    {selectedOrder.amount}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-slate-500 block text-xs uppercase mb-1">
+                    Created At
+                  </span>
+                  {selectedOrder.createdAt}
+                </div>
+                <div>
+                  <span className="text-slate-500 block text-xs uppercase mb-1">
+                    Due Date
+                  </span>
+                  {selectedOrder.dueDate}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reassign Vendor Dialog */}
+      <Dialog open={isReassignOpen} onOpenChange={setIsReassignOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reassign Vendor</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-slate-600">
+              Select a new vendor for Order{" "}
+              <span className="font-bold">#{selectedOrder?.id}</span>.
+            </p>
+            <div className="space-y-2">
+              <Label>Select New Vendor</Label>
+              <Select value={newVendor} onValueChange={setNewVendor}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a vendor" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Clean Express">Clean Express</SelectItem>
+                  <SelectItem value="Sparkle Wash">Sparkle Wash</SelectItem>
+                  <SelectItem value="Fresh Laundry">Fresh Laundry</SelectItem>
+                  <SelectItem value="Quick Clean">Quick Clean</SelectItem>
+                  <SelectItem value="Urban Laundry">Urban Laundry</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsReassignOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={handleReassignConfirm}
+              disabled={!newVendor}
+            >
+              Confirm Reassignment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-

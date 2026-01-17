@@ -39,6 +39,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import Link from "next/link";
 
 const vendors = [
@@ -136,10 +143,26 @@ const getStatusColor = (status: string) => {
 };
 
 export default function VendorsPage() {
+  const [vendorList, setVendorList] = useState(vendors);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedVendor, setSelectedVendor] = useState<
+    (typeof vendors)[0] | null
+  >(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  const filteredVendors = vendors.filter((vendor) => {
+  const handleStatusChange = (id: string, newStatus: string) => {
+    setVendorList((prev) =>
+      prev.map((v) => (v.id === id ? { ...v, status: newStatus } : v)),
+    );
+  };
+
+  const handleViewDetails = (vendor: (typeof vendors)[0]) => {
+    setSelectedVendor(vendor);
+    setIsDetailsOpen(true);
+  };
+
+  const filteredVendors = vendorList.filter((vendor) => {
     const matchesSearch =
       vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       vendor.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -174,22 +197,22 @@ export default function VendorsPage() {
         {[
           {
             label: "Total Vendors",
-            value: vendors.length,
+            value: vendorList.length,
             color: "text-slate-700",
           },
           {
             label: "Active",
-            value: vendors.filter((v) => v.status === "Active").length,
+            value: vendorList.filter((v) => v.status === "Active").length,
             color: "text-green-600",
           },
           {
             label: "Pending Approval",
-            value: vendors.filter((v) => v.status === "Pending").length,
+            value: vendorList.filter((v) => v.status === "Pending").length,
             color: "text-amber-600",
           },
           {
             label: "Suspended",
-            value: vendors.filter((v) => v.status === "Suspended").length,
+            value: vendorList.filter((v) => v.status === "Suspended").length,
             color: "text-red-600",
           },
         ].map((stat) => (
@@ -306,8 +329,8 @@ export default function VendorsPage() {
                         vendor.completionRate >= 90
                           ? "text-green-600"
                           : vendor.completionRate >= 80
-                          ? "text-amber-600"
-                          : "text-red-600"
+                            ? "text-amber-600"
+                            : "text-red-600"
                       }`}
                     >
                       {vendor.completionRate}%
@@ -325,7 +348,7 @@ export default function VendorsPage() {
                 <TableCell>
                   <Badge
                     className={`${getStatusColor(
-                      vendor.status
+                      vendor.status,
                     )} border-none font-medium gap-1.5`}
                   >
                     {vendor.status === "Active" && (
@@ -348,21 +371,39 @@ export default function VendorsPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="gap-2">
+                      <DropdownMenuItem
+                        className="gap-2"
+                        onClick={() => handleViewDetails(vendor)}
+                      >
                         <Eye className="h-4 w-4" /> View Details
                       </DropdownMenuItem>
                       {vendor.status === "Pending" && (
-                        <DropdownMenuItem className="gap-2 text-green-600">
+                        <DropdownMenuItem
+                          className="gap-2 text-green-600"
+                          onClick={() =>
+                            handleStatusChange(vendor.id, "Active")
+                          }
+                        >
                           <CheckCircle className="h-4 w-4" /> Approve Vendor
                         </DropdownMenuItem>
                       )}
                       {vendor.status === "Active" && (
-                        <DropdownMenuItem className="gap-2 text-red-600">
+                        <DropdownMenuItem
+                          className="gap-2 text-red-600"
+                          onClick={() =>
+                            handleStatusChange(vendor.id, "Suspended")
+                          }
+                        >
                           <Ban className="h-4 w-4" /> Suspend Vendor
                         </DropdownMenuItem>
                       )}
                       {vendor.status === "Suspended" && (
-                        <DropdownMenuItem className="gap-2 text-green-600">
+                        <DropdownMenuItem
+                          className="gap-2 text-green-600"
+                          onClick={() =>
+                            handleStatusChange(vendor.id, "Active")
+                          }
+                        >
                           <CheckCircle className="h-4 w-4" /> Reactivate Vendor
                         </DropdownMenuItem>
                       )}
@@ -390,7 +431,110 @@ export default function VendorsPage() {
           </div>
         </div>
       </div>
+
+      {/* Vendor Details Dialog */}
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Vendor Details</DialogTitle>
+          </DialogHeader>
+          {selectedVendor && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <Avatar className="h-16 w-16 border">
+                  <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+                    {selectedVendor.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="text-lg font-bold text-black">
+                    {selectedVendor.name}
+                  </h3>
+                  <Badge
+                    className={`${getStatusColor(
+                      selectedVendor.status,
+                    )} border-none mt-1`}
+                  >
+                    {selectedVendor.status}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-xs text-slate-500 font-medium uppercase">
+                    Owner Name
+                  </p>
+                  <p className="text-sm font-medium">{selectedVendor.owner}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs text-slate-500 font-medium uppercase">
+                    Phone
+                  </p>
+                  <p className="text-sm font-medium">{selectedVendor.phone}</p>
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <p className="text-xs text-slate-500 font-medium uppercase">
+                    Location
+                  </p>
+                  <p className="text-sm font-medium">
+                    {selectedVendor.location}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs text-slate-500 font-medium uppercase">
+                    Joined Date
+                  </p>
+                  <p className="text-sm font-medium">
+                    {selectedVendor.joinedDate}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs text-slate-500 font-medium uppercase">
+                    Vendor ID
+                  </p>
+                  <p className="text-sm font-medium font-mono">
+                    {selectedVendor.id}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 rounded-lg p-4 grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Total Orders</p>
+                  <p className="text-lg font-bold text-black">
+                    {selectedVendor.totalOrders}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Rating</p>
+                  <div className="flex items-center justify-center gap-1">
+                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                    <p className="text-lg font-bold text-black">
+                      {selectedVendor.rating || "-"}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1">Pending</p>
+                  <p className="text-lg font-bold text-[#3E8940]">
+                    {selectedVendor.pendingPayout}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-

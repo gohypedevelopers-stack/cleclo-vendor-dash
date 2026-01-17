@@ -5,6 +5,22 @@ import { Plus, Trash2, Edit, GripVertical, Tag, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const promotions = [
   {
@@ -62,11 +78,45 @@ const getTypeColor = (type: string) => {
 
 export default function PromotionsPage() {
   const [promoList, setPromoList] = useState(promotions);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newPromo, setNewPromo] = useState({
+    title: "",
+    description: "",
+    discount: "",
+    type: "Seasonal",
+    validUntil: "",
+  });
 
   const togglePromo = (id: number) => {
     setPromoList((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, active: !p.active } : p))
+      prev.map((p) => (p.id === id ? { ...p, active: !p.active } : p)),
     );
+  };
+
+  const handleAddPromo = () => {
+    if (!newPromo.title || !newPromo.discount) return;
+
+    const newId = Math.max(...promoList.map((p) => p.id)) + 1;
+    setPromoList((prev) => [
+      ...prev,
+      {
+        id: newId,
+        title: newPromo.title,
+        description: newPromo.description || "No description",
+        type: newPromo.type,
+        discount: newPromo.discount,
+        active: true,
+        validUntil: newPromo.validUntil || "Ongoing",
+      },
+    ]);
+    setNewPromo({
+      title: "",
+      description: "",
+      discount: "",
+      type: "Seasonal",
+      validUntil: "",
+    });
+    setIsDialogOpen(false);
   };
 
   return (
@@ -81,7 +131,10 @@ export default function PromotionsPage() {
             Manage promotional cards on the home screen
           </p>
         </div>
-        <Button className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80">
+        <Button
+          className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80"
+          onClick={() => setIsDialogOpen(true)}
+        >
           <Plus className="h-4 w-4" />
           Add Promotion
         </Button>
@@ -164,7 +217,93 @@ export default function PromotionsPage() {
           </div>
         ))}
       </div>
+
+      {/* Add Promotion Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Promotion</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Title</Label>
+              <Input
+                placeholder="e.g., Winter Sale"
+                value={newPromo.title}
+                onChange={(e) =>
+                  setNewPromo({ ...newPromo, title: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label>Description</Label>
+              <Input
+                placeholder="e.g., Flat 10% off on all orders"
+                value={newPromo.description}
+                onChange={(e) =>
+                  setNewPromo({ ...newPromo, description: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Discount Text</Label>
+                <Input
+                  placeholder="e.g., 10% OFF"
+                  value={newPromo.discount}
+                  onChange={(e) =>
+                    setNewPromo({ ...newPromo, discount: e.target.value })
+                  }
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label>Valid Until</Label>
+                <Input
+                  placeholder="e.g., Mar 31"
+                  value={newPromo.validUntil}
+                  onChange={(e) =>
+                    setNewPromo({ ...newPromo, validUntil: e.target.value })
+                  }
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div>
+              <Label>Promotion Type</Label>
+              <Select
+                value={newPromo.type}
+                onValueChange={(value) =>
+                  setNewPromo({ ...newPromo, type: value })
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Seasonal">Seasonal</SelectItem>
+                  <SelectItem value="New User">New User</SelectItem>
+                  <SelectItem value="Weekend">Weekend</SelectItem>
+                  <SelectItem value="Bulk">Bulk</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={handleAddPromo}
+            >
+              Add Promotion
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-

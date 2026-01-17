@@ -16,6 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const banners = [
   {
@@ -49,11 +56,37 @@ const banners = [
 
 export default function BannersPage() {
   const [bannerList, setBannerList] = useState(banners);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newBanner, setNewBanner] = useState({
+    title: "",
+    linkedTo: "",
+    expiryDate: "",
+  });
 
   const toggleBanner = (id: number) => {
     setBannerList((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, active: !b.active } : b))
+      prev.map((b) => (b.id === id ? { ...b, active: !b.active } : b)),
     );
+  };
+
+  const handleAddBanner = () => {
+    if (!newBanner.title || !newBanner.linkedTo) return;
+
+    const newId = Math.max(...bannerList.map((b) => b.id)) + 1;
+    setBannerList((prev) => [
+      ...prev,
+      {
+        id: newId,
+        title: newBanner.title,
+        image: "/banners/placeholder.jpg", // Default placeholder
+        linkedTo: newBanner.linkedTo,
+        active: true,
+        expiryDate: newBanner.expiryDate || "No Expiry",
+        clicks: 0,
+      },
+    ]);
+    setNewBanner({ title: "", linkedTo: "", expiryDate: "" });
+    setIsDialogOpen(false);
   };
 
   return (
@@ -68,7 +101,10 @@ export default function BannersPage() {
             Manage home screen promotional banners
           </p>
         </div>
-        <Button className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80">
+        <Button
+          className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80"
+          onClick={() => setIsDialogOpen(true)}
+        >
           <Plus className="h-4 w-4" />
           Add Banner
         </Button>
@@ -146,7 +182,72 @@ export default function BannersPage() {
           <li>• Drag banners to reorder them in the app</li>
         </ul>
       </div>
+
+      {/* Add Banner Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Banner</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium text-slate-700">
+                Banner Title
+              </label>
+              <Input
+                placeholder="e.g., Summer Sale"
+                value={newBanner.title}
+                onChange={(e) =>
+                  setNewBanner({ ...newBanner, title: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700">
+                Link To (Service/Category)
+              </label>
+              <Input
+                placeholder="e.g., Dry Clean Service"
+                value={newBanner.linkedTo}
+                onChange={(e) =>
+                  setNewBanner({ ...newBanner, linkedTo: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700">
+                Expiry Date
+              </label>
+              <Input
+                placeholder="e.g., Mar 31, 2026"
+                value={newBanner.expiryDate}
+                onChange={(e) =>
+                  setNewBanner({ ...newBanner, expiryDate: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div className="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg flex items-center gap-2">
+              <Upload className="h-4 w-4" />
+              Image upload is disabled in demo mode
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={handleAddBanner}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Banner
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-

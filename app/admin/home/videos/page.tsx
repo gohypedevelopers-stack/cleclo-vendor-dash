@@ -13,6 +13,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const videos = [
   {
@@ -43,11 +52,35 @@ const videos = [
 
 export default function VideosPage() {
   const [videoList, setVideoList] = useState(videos);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newVideo, setNewVideo] = useState({
+    title: "",
+    duration: "",
+  });
 
   const toggleVideo = (id: number) => {
     setVideoList((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, active: !v.active } : v))
+      prev.map((v) => (v.id === id ? { ...v, active: !v.active } : v)),
     );
+  };
+
+  const handleAddVideo = () => {
+    if (!newVideo.title) return;
+
+    const newId = Math.max(...videoList.map((v) => v.id)) + 1;
+    setVideoList((prev) => [
+      ...prev,
+      {
+        id: newId,
+        title: newVideo.title,
+        thumbnail: "/videos/placeholder.jpg",
+        duration: newVideo.duration || "0:00",
+        views: 0,
+        active: true,
+      },
+    ]);
+    setNewVideo({ title: "", duration: "" });
+    setIsDialogOpen(false);
   };
 
   return (
@@ -62,7 +95,10 @@ export default function VideosPage() {
             Manage explainer videos and thumbnails
           </p>
         </div>
-        <Button className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80">
+        <Button
+          className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80"
+          onClick={() => setIsDialogOpen(true)}
+        >
           <Plus className="h-4 w-4" />
           Add Video
         </Button>
@@ -145,7 +181,54 @@ export default function VideosPage() {
           </Button>
         </div>
       </div>
+
+      {/* Add Video Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Video</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Video Title</Label>
+              <Input
+                placeholder="e.g., How to use the app"
+                value={newVideo.title}
+                onChange={(e) =>
+                  setNewVideo({ ...newVideo, title: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label>Duration</Label>
+              <Input
+                placeholder="e.g., 2:30"
+                value={newVideo.duration}
+                onChange={(e) =>
+                  setNewVideo({ ...newVideo, duration: e.target.value })
+                }
+                className="mt-1"
+              />
+            </div>
+            <div className="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg flex items-center gap-2">
+              <Upload className="h-4 w-4" />
+              Video upload is disabled in demo mode
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={handleAddVideo}
+            >
+              Add Video
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-
