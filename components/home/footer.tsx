@@ -173,11 +173,11 @@ export default function Footer() {
                 className="flex items-center gap-3 hover:text-white transition-colors"
               >
                 <Phone className="w-4 h-4 text-primary" />
-                +91 98765 43210
+                +91 98XXX XXXXX
               </a>
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-primary mt-0.5" />
-                <span>Bangalore, Karnataka, India</span>
+                <span>New Delhi</span>
               </div>
             </div>
 
@@ -260,15 +260,8 @@ export default function Footer() {
 
             {/* Made with love badge */}
             <div className="flex items-center gap-2 text-sm text-white/40">
-              Made with
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="text-red-500"
-              >
-                ❤️
-              </motion.span>
-              in India
+              Made
+              by Go Hype Media
             </div>
           </motion.div>
         </div>
