@@ -793,7 +793,7 @@ export default function ItemsPage() {
                     }`}
                     style={
                       newItem.service === service
-                        ? { ringColor: serviceColors[service] }
+                        ? { boxShadow: `0 0 0 2px ${serviceColors[service]}` }
                         : {}
                     }
                   >
@@ -826,4 +826,3 @@ export default function ItemsPage() {
     </div>
   );
 }
-
