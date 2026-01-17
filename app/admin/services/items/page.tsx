@@ -500,7 +500,7 @@ export default function ItemsPage() {
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm flex-wrap">
           <Link
-            href="/admin/app/services/services"
+            href="/admin/services/services"
             className="text-primary hover:underline flex items-center gap-1"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -510,7 +510,7 @@ export default function ItemsPage() {
             <>
               <span className="text-slate-400">/</span>
               <Link
-                href={`/admin/app/services/categories?service=${serviceFromUrl}`}
+                href={`/admin/services/categories?service=${serviceFromUrl}`}
                 className="hover:underline"
                 style={{ color: serviceColor }}
               >
@@ -522,7 +522,7 @@ export default function ItemsPage() {
             <>
               <span className="text-slate-400">/</span>
               <Link
-                href={`/admin/app/services/subcategories?category=${categoryFromUrl}${
+                href={`/admin/services/subcategories?category=${categoryFromUrl}${
                   serviceFromUrl ? `&service=${serviceFromUrl}` : ""
                 }`}
                 className="text-primary hover:underline"
@@ -826,3 +826,4 @@ export default function ItemsPage() {
     </div>
   );
 }
+

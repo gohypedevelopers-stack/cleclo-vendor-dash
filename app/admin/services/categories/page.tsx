@@ -168,7 +168,7 @@ export default function CategoriesPage() {
         {serviceFromUrl && (
           <div className="flex items-center gap-2 text-sm">
             <Link
-              href="/admin/app/services/services"
+              href="/admin/services/services"
               className="text-primary hover:underline flex items-center gap-1"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -305,7 +305,7 @@ export default function CategoriesPage() {
               </div>
 
               <Link
-                href={`/admin/app/services/subcategories?category=${
+                href={`/admin/services/subcategories?category=${
                   category.name
                 }${serviceFromUrl ? `&service=${serviceFromUrl}` : ""}`}
                 className="px-6 py-5 border-l hover:bg-slate-50 transition-colors flex items-center gap-2 text-primary font-medium"
@@ -425,3 +425,4 @@ export default function CategoriesPage() {
     </div>
   );
 }
+

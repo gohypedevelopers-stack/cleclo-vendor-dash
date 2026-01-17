@@ -18,27 +18,27 @@ const appSections = [
     items: [
       {
         name: "Banners",
-        href: "/admin/app/home/banners",
+        href: "/admin/home/banners",
         description: "Manage promotional banners",
       },
       {
         name: "Services Grid",
-        href: "/admin/app/home/services",
+        href: "/admin/home/services",
         description: "Toggle service visibility",
       },
       {
         name: "Referral Banner",
-        href: "/admin/app/home/referral",
+        href: "/admin/home/referral",
         description: "Edit rewards and design",
       },
       {
         name: "Videos",
-        href: "/admin/app/home/videos",
+        href: "/admin/home/videos",
         description: "Explainer videos and thumbnails",
       },
       {
         name: "Promotions",
-        href: "/admin/app/home/promotions",
+        href: "/admin/home/promotions",
         description: "Promotional cards slider",
       },
     ],
@@ -50,22 +50,22 @@ const appSections = [
     items: [
       {
         name: "Services",
-        href: "/admin/app/services/services",
+        href: "/admin/services/services",
         description: "Main service types (Laundry, Dry Clean, etc.)",
       },
       {
         name: "Categories",
-        href: "/admin/app/services/categories",
+        href: "/admin/services/categories",
         description: "Categories within each service",
       },
       {
         name: "Sub Categories",
-        href: "/admin/app/services/subcategories",
+        href: "/admin/services/subcategories",
         description: "Sub-categories for detailed classification",
       },
       {
         name: "Items",
-        href: "/admin/app/services/items",
+        href: "/admin/services/items",
         description: "Individual service items and pricing",
       },
     ],
@@ -77,7 +77,7 @@ const appSections = [
     items: [
       {
         name: "Add Money Settings",
-        href: "/admin/app/wallet/settings",
+        href: "/admin/wallet/settings",
         description: "Min/max amounts, bonuses",
       },
     ],
@@ -142,3 +142,4 @@ export default function AppContentPage() {
     </div>
   );
 }
+

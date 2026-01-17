@@ -237,7 +237,7 @@ export default function ServicesPage() {
 
                 {/* View Button */}
                 <Link
-                  href={`/admin/app/services/categories?service=${service.name}`}
+                  href={`/admin/services/categories?service=${service.name}`}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all"
                   style={{
                     backgroundColor: service.color + "15",
@@ -356,3 +356,4 @@ export default function ServicesPage() {
     </div>
   );
 }
+

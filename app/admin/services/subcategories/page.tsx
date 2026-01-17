@@ -138,7 +138,7 @@ export default function SubCategoriesPage() {
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm flex-wrap">
           <Link
-            href="/admin/app/services/services"
+            href="/admin/services/services"
             className="text-primary hover:underline flex items-center gap-1"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -148,7 +148,7 @@ export default function SubCategoriesPage() {
             <>
               <span className="text-slate-400">/</span>
               <Link
-                href={`/admin/app/services/categories?service=${serviceFromUrl}`}
+                href={`/admin/services/categories?service=${serviceFromUrl}`}
                 className="hover:underline"
                 style={{ color: serviceColor }}
               >
@@ -276,7 +276,7 @@ export default function SubCategoriesPage() {
               </div>
 
               <Link
-                href={`/admin/app/services/items?subcategory=${
+                href={`/admin/services/items?subcategory=${
                   subCategory.name
                 }&category=${subCategory.category}${
                   serviceFromUrl ? `&service=${serviceFromUrl}` : ""
@@ -397,3 +397,4 @@ export default function SubCategoriesPage() {
     </div>
   );
 }
+
