@@ -13,6 +13,7 @@ import {
   Clock,
   Ban,
   CreditCard,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -150,6 +151,13 @@ export default function VendorsPage() {
     (typeof vendors)[0] | null
   >(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    owner: "",
+    phone: "",
+    location: "",
+  });
 
   const handleStatusChange = (id: string, newStatus: string) => {
     setVendorList((prev) =>
@@ -160,6 +168,36 @@ export default function VendorsPage() {
   const handleViewDetails = (vendor: (typeof vendors)[0]) => {
     setSelectedVendor(vendor);
     setIsDetailsOpen(true);
+  };
+
+  const handleEditClick = (vendor: (typeof vendors)[0]) => {
+    setSelectedVendor(vendor);
+    setEditForm({
+      name: vendor.name,
+      owner: vendor.owner,
+      phone: vendor.phone,
+      location: vendor.location,
+    });
+    setIsEditOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (!selectedVendor) return;
+
+    setVendorList((prev) =>
+      prev.map((v) =>
+        v.id === selectedVendor.id
+          ? {
+              ...v,
+              name: editForm.name,
+              owner: editForm.owner,
+              phone: editForm.phone,
+              location: editForm.location,
+            }
+          : v,
+      ),
+    );
+    setIsEditOpen(false);
   };
 
   const filteredVendors = vendorList.filter((vendor) => {
@@ -364,54 +402,69 @@ export default function VendorsPage() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right pr-6">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        className="gap-2"
-                        onClick={() => handleViewDetails(vendor)}
-                      >
-                        <Eye className="h-4 w-4" /> View Details
-                      </DropdownMenuItem>
-                      {vendor.status === "Pending" && (
-                        <DropdownMenuItem
-                          className="gap-2 text-green-600"
-                          onClick={() =>
-                            handleStatusChange(vendor.id, "Active")
-                          }
+                  <div className="flex items-center justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-slate-500 hover:text-[#3E8940] hover:bg-[#3E8940]/10"
+                      onClick={() => handleEditClick(vendor)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-slate-500 hover:text-black"
                         >
-                          <CheckCircle className="h-4 w-4" /> Approve Vendor
-                        </DropdownMenuItem>
-                      )}
-                      {vendor.status === "Active" && (
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
                         <DropdownMenuItem
-                          className="gap-2 text-red-600"
-                          onClick={() =>
-                            handleStatusChange(vendor.id, "Suspended")
-                          }
+                          className="gap-2"
+                          onClick={() => handleViewDetails(vendor)}
                         >
-                          <Ban className="h-4 w-4" /> Suspend Vendor
+                          <Eye className="h-4 w-4" /> View Details
                         </DropdownMenuItem>
-                      )}
-                      {vendor.status === "Suspended" && (
-                        <DropdownMenuItem
-                          className="gap-2 text-green-600"
-                          onClick={() =>
-                            handleStatusChange(vendor.id, "Active")
-                          }
-                        >
-                          <CheckCircle className="h-4 w-4" /> Reactivate Vendor
+                        {vendor.status === "Pending" && (
+                          <DropdownMenuItem
+                            className="gap-2 text-green-600"
+                            onClick={() =>
+                              handleStatusChange(vendor.id, "Active")
+                            }
+                          >
+                            <CheckCircle className="h-4 w-4" /> Approve Vendor
+                          </DropdownMenuItem>
+                        )}
+                        {vendor.status === "Active" && (
+                          <DropdownMenuItem
+                            className="gap-2 text-red-600"
+                            onClick={() =>
+                              handleStatusChange(vendor.id, "Suspended")
+                            }
+                          >
+                            <Ban className="h-4 w-4" /> Suspend Vendor
+                          </DropdownMenuItem>
+                        )}
+                        {vendor.status === "Suspended" && (
+                          <DropdownMenuItem
+                            className="gap-2 text-green-600"
+                            onClick={() =>
+                              handleStatusChange(vendor.id, "Active")
+                            }
+                          >
+                            <CheckCircle className="h-4 w-4" /> Reactivate
+                            Vendor
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem className="gap-2">
+                          <CreditCard className="h-4 w-4" /> View Payouts
                         </DropdownMenuItem>
-                      )}
-                      <DropdownMenuItem className="gap-2">
-                        <CreditCard className="h-4 w-4" /> View Payouts
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -531,6 +584,78 @@ export default function VendorsPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Vendor Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Vendor Details</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <label htmlFor="name" className="text-sm font-medium">
+                Vendor Business Name
+              </label>
+              <Input
+                id="name"
+                value={editForm.name}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, name: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="owner" className="text-sm font-medium">
+                Owner Name
+              </label>
+              <Input
+                id="owner"
+                value={editForm.owner}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, owner: e.target.value })
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="phone" className="text-sm font-medium">
+                  Phone
+                </label>
+                <Input
+                  id="phone"
+                  value={editForm.phone}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="location" className="text-sm font-medium">
+                  Location
+                </label>
+                <Input
+                  id="location"
+                  value={editForm.location}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, location: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={handleSaveEdit}
+            >
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>
