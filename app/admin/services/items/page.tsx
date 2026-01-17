@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -416,7 +416,7 @@ const serviceBadgeColors: Record<string, string> = {
   "Dry Clean": "bg-purple-100 text-purple-700",
 };
 
-export default function ItemsPage() {
+function ItemsPageContent() {
   const searchParams = useSearchParams();
   const subCategoryFromUrl = searchParams.get("subcategory");
   const categoryFromUrl = searchParams.get("category");
@@ -824,5 +824,17 @@ export default function ItemsPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+export default function ItemsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center p-8">Loading...</div>
+      }
+    >
+      <ItemsPageContent />
+    </Suspense>
   );
 }

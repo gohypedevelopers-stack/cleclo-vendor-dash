@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -65,7 +65,7 @@ const serviceColors: Record<string, string> = {
   "Iron Only": "#F59E0B",
 };
 
-export default function SubCategoriesPage() {
+function SubCategoriesPageContent() {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
   const serviceFromUrl = searchParams.get("service");
@@ -398,3 +398,14 @@ export default function SubCategoriesPage() {
   );
 }
 
+export default function SubCategoriesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center p-8">Loading...</div>
+      }
+    >
+      <SubCategoriesPageContent />
+    </Suspense>
+  );
+}
