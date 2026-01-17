@@ -1,49 +1,216 @@
+"use client";
+
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { UserPlus, Store, Package, Banknote, ArrowRight } from "lucide-react";
+
 export default function HowItWorks() {
   const steps = [
     {
-      number: "1",
+      number: "01",
+      icon: UserPlus,
       title: "Register as a Vendor",
-      description: "Sign up and complete your profile with business details and verification documents.",
+      description:
+        "Sign up and complete your profile with business details and verification documents. Our team will verify your information within 24 hours.",
+      gradient: "from-blue-500 to-cyan-500",
+      color: "text-blue-500",
     },
     {
-      number: "2",
+      number: "02",
+      icon: Store,
       title: "Add Your Outlets & Services",
-      description: "Create outlets, define services (Dry Clean, Wash, Iron), and set pricing.",
+      description:
+        "Create outlets, define services (Dry Clean, Wash, Iron), set your pricing, and configure your service areas.",
+      gradient: "from-purple-500 to-pink-500",
+      color: "text-purple-500",
     },
     {
-      number: "3",
-      title: "Receive Orders & Get Paid",
-      description: "Start receiving orders automatically and get paid on time, every time.",
+      number: "03",
+      icon: Package,
+      title: "Start Receiving Orders",
+      description:
+        "Once approved, start receiving orders automatically. Our smart system assigns orders to your nearest outlet.",
+      gradient: "from-orange-500 to-amber-500",
+      color: "text-orange-500",
     },
-  ]
+    {
+      number: "04",
+      icon: Banknote,
+      title: "Get Paid on Time",
+      description:
+        "Track your earnings in real-time and receive payouts directly to your bank account. Weekly settlements guaranteed.",
+      gradient: "from-green-500 to-emerald-500",
+      color: "text-green-500",
+    },
+  ];
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const lineHeight = useTransform(scrollYProgress, [0.1, 0.9], ["0%", "100%"]);
 
   return (
-    <section id="how" className="py-20 md:py-32 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">How It Works</h2>
+    <section
+      id="how"
+      className="py-12 md:py-20 bg-card relative overflow-hidden"
+    >
+      {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-[120px]" />
+      </div>
+
+      <div
+        ref={containerRef}
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
+        {/* Section header */}
+        <motion.div
+          className="text-center mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.span
+            className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={
+              isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
+            }
+            transition={{ delay: 0.2 }}
+          >
+            Getting Started
+          </motion.span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+            How It <span className="gradient-text">Works</span>
+          </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Three simple steps to grow your laundry business
+            Four simple steps to grow your laundry business with our platform
           </p>
+        </motion.div>
+
+        {/* Timeline container */}
+        <div className="relative">
+          {/* Vertical timeline line - Desktop */}
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2">
+            <motion.div
+              className="absolute top-0 left-0 w-full bg-gradient-to-b from-primary via-secondary to-primary"
+              style={{ height: lineHeight }}
+            />
+          </div>
+
+          {/* Steps */}
+          <div className="space-y-12 md:space-y-0">
+            {steps.map((step, index) => {
+              const IconComponent = step.icon;
+              const isEven = index % 2 === 0;
+
+              return (
+                <motion.div
+                  key={index}
+                  className={`relative flex flex-col md:flex-row items-center ${isEven ? "md:flex-row" : "md:flex-row-reverse"}`}
+                  initial={{ opacity: 0, x: isEven ? -50 : 50 }}
+                  animate={
+                    isInView
+                      ? { opacity: 1, x: 0 }
+                      : { opacity: 0, x: isEven ? -50 : 50 }
+                  }
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.15,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  {/* Content card */}
+                  <div
+                    className={`w-full md:w-5/12 ${isEven ? "md:pr-12 md:text-right" : "md:pl-12 md:text-left"}`}
+                  >
+                    <motion.div
+                      className="bg-background rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 group"
+                      whileHover={{ y: -5 }}
+                    >
+                      {/* Step number - Mobile */}
+                      <div
+                        className={`md:hidden inline-flex items-center gap-2 mb-4 ${step.color}`}
+                      >
+                        <span className="text-xs font-bold uppercase tracking-wider">
+                          Step
+                        </span>
+                        <span className="text-2xl font-bold">
+                          {step.number}
+                        </span>
+                      </div>
+
+                      {/* Icon */}
+                      <div
+                        className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${step.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform`}
+                      >
+                        <IconComponent className="w-7 h-7 text-white" />
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                        {step.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-muted-foreground leading-relaxed">
+                        {step.description}
+                      </p>
+                    </motion.div>
+                  </div>
+
+                  {/* Center circle with number */}
+                  <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                    <motion.div
+                      className={`w-16 h-16 rounded-full bg-gradient-to-br ${step.gradient} flex items-center justify-center shadow-lg`}
+                      initial={{ scale: 0 }}
+                      animate={isInView ? { scale: 1 } : { scale: 0 }}
+                      transition={{
+                        delay: index * 0.15 + 0.3,
+                        type: "spring",
+                        bounce: 0.5,
+                      }}
+                    >
+                      <span className="text-xl font-bold text-white">
+                        {step.number}
+                      </span>
+                    </motion.div>
+                  </div>
+
+                  {/* Empty space for the other side */}
+                  <div className="hidden md:block w-5/12" />
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <div className="bg-card rounded-xl p-8 shadow-sm border border-border h-full">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-accent to-secondary mb-6 flex-shrink-0">
-                  <span className="text-2xl font-bold text-white">{step.number}</span>
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
-              </div>
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/3 -right-4 text-secondary text-2xl">→</div>
-              )}
-            </div>
-          ))}
-        </div>
+        {/* Bottom CTA */}
+        <motion.div
+          className="text-center mt-20"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ delay: 0.8 }}
+        >
+          <p className="text-muted-foreground mb-4">
+            Ready to start your journey?
+          </p>
+          <motion.a
+            href="/signup"
+            className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-4 transition-all"
+            whileHover={{ scale: 1.05 }}
+          >
+            Get Started Today
+            <ArrowRight className="w-5 h-5" />
+          </motion.a>
+        </motion.div>
       </div>
     </section>
-  )
+  );
 }
