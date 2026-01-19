@@ -33,7 +33,7 @@ const initialCategories = [
     icon: "👔",
     subCategoriesCount: 12,
     active: true,
-    services: ["Wash", "Both", "Dry Clean"],
+    services: ["Wash", "Dry Clean", "Iron"],
   },
   {
     id: 2,
@@ -41,7 +41,7 @@ const initialCategories = [
     icon: "👗",
     subCategoriesCount: 15,
     active: true,
-    services: ["Wash", "Both", "Dry Clean"],
+    services: ["Wash", "Dry Clean", "Iron"],
   },
   {
     id: 3,
@@ -102,7 +102,16 @@ function CategoriesPageContent() {
     icon: "👔",
     services: ["Wash", "Dry Clean"] as string[],
   });
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [quickAddName, setQuickAddName] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const filterOptions = ["All", "Wash", "Dry Clean", "Iron"];
+
+  const filteredCategories = categoryList.filter((category) => {
+    if (activeFilter === "All") return true;
+    return category.services.includes(activeFilter);
+  });
 
   const toggleNewCategoryService = (service: string) => {
     setNewCategory((prev) => ({
@@ -115,7 +124,7 @@ function CategoriesPageContent() {
 
   const toggleCategory = (id: number) => {
     setCategoryList((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, active: !c.active } : c))
+      prev.map((c) => (c.id === id ? { ...c, active: !c.active } : c)),
     );
   };
 
@@ -127,7 +136,7 @@ function CategoriesPageContent() {
   const handleAddCategory = (
     name: string,
     icon: string,
-    services: string[]
+    services: string[],
   ) => {
     if (!name.trim()) return;
     if (services.length === 0) return;
@@ -146,9 +155,44 @@ function CategoriesPageContent() {
     ]);
   };
 
-  const handleDialogAdd = () => {
-    handleAddCategory(newCategory.name, newCategory.icon, newCategory.services);
+  const handleEditClick = (category: (typeof initialCategories)[0]) => {
+    setNewCategory({
+      name: category.name,
+      icon: category.icon,
+      services: category.services,
+    });
+    setEditingId(category.id);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogSubmit = () => {
+    if (!newCategory.name.trim() || newCategory.services.length === 0) return;
+
+    if (editingId) {
+      // Update existing
+      setCategoryList((prev) =>
+        prev.map((c) =>
+          c.id === editingId
+            ? {
+                ...c,
+                name: newCategory.name,
+                icon: newCategory.icon,
+                services: newCategory.services,
+              }
+            : c,
+        ),
+      );
+    } else {
+      // Add new
+      handleAddCategory(
+        newCategory.name,
+        newCategory.icon,
+        newCategory.services,
+      );
+    }
+
     setNewCategory({ name: "", icon: "👔", services: ["Wash", "Dry Clean"] });
+    setEditingId(null);
     setIsDialogOpen(false);
   };
 
@@ -201,7 +245,15 @@ function CategoriesPageContent() {
             <Button
               variant="outline"
               className="gap-2"
-              onClick={() => setIsDialogOpen(true)}
+              onClick={() => {
+                setEditingId(null);
+                setNewCategory({
+                  name: "",
+                  icon: "👔",
+                  services: ["Wash", "Dry Clean"],
+                });
+                setIsDialogOpen(true);
+              }}
             >
               <Plus className="h-4 w-4" />
               Add Category
@@ -238,83 +290,111 @@ function CategoriesPageContent() {
           </div>
         </div>
 
-        {/* Categories List */}
-        <div className="bg-white rounded-2xl shadow-sm border divide-y">
-          {categoryList.map((category) => (
-            <div
-              key={category.id}
-              className={`flex items-center ${
-                !category.active ? "opacity-60" : ""
+        {/* Filters */}
+        <div className="flex gap-2 pb-2 overflow-x-auto">
+          {filterOptions.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                activeFilter === filter
+                  ? "bg-[#3E8940] text-white shadow-md shadow-[#3E8940]/20"
+                  : "bg-white text-slate-600 hover:bg-slate-50 border"
               }`}
             >
-              <div className="p-5 flex items-center gap-4 flex-1">
-                <GripVertical className="h-5 w-5 text-slate-300 cursor-grab" />
+              {filter}
+            </button>
+          ))}
+        </div>
 
-                <div
-                  className="h-14 w-14 rounded-xl flex items-center justify-center text-3xl"
-                  style={{ backgroundColor: serviceColor + "15" }}
-                >
-                  {category.icon}
-                </div>
+        {/* Categories List */}
+        <div className="bg-white rounded-2xl shadow-sm border divide-y">
+          {filteredCategories.length === 0 ? (
+            <div className="p-8 text-center text-slate-500">
+              No categories found for "{activeFilter}"
+            </div>
+          ) : (
+            filteredCategories.map((category) => (
+              <div
+                key={category.id}
+                className={`flex items-center ${
+                  !category.active ? "opacity-60" : ""
+                }`}
+              >
+                <div className="p-5 flex items-center gap-4 flex-1">
+                  <GripVertical className="h-5 w-5 text-slate-300 cursor-grab" />
 
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-black text-lg">
-                      {category.name}
-                    </h3>
-                    {!category.active && (
-                      <Badge className="bg-slate-100 text-slate-600 border-none text-xs">
-                        Hidden
-                      </Badge>
-                    )}
+                  <div
+                    className="h-14 w-14 rounded-xl flex items-center justify-center text-3xl"
+                    style={{ backgroundColor: serviceColor + "15" }}
+                  >
+                    {category.icon}
                   </div>
-                  <div className="flex items-center gap-2 mt-1 flex-wrap">
-                    <span className="text-sm text-slate-500">
-                      {category.subCategoriesCount} sub-categories
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <div className="flex gap-1.5 flex-wrap">
-                      {category.services.map((service) => (
-                        <Badge
-                          key={service}
-                          className={`border-none text-[10px] px-2 py-0.5 ${serviceColors[service]?.bg} ${serviceColors[service]?.text}`}
-                        >
-                          {service}
+
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-black text-lg">
+                        {category.name}
+                      </h3>
+                      {!category.active && (
+                        <Badge className="bg-slate-100 text-slate-600 border-none text-xs">
+                          Hidden
                         </Badge>
-                      ))}
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+                      <span className="text-sm text-slate-500">
+                        {category.subCategoriesCount} sub-categories
+                      </span>
+                      <span className="text-slate-300">•</span>
+                      <div className="flex gap-1.5 flex-wrap">
+                        {category.services.map((service) => (
+                          <Badge
+                            key={service}
+                            className={`border-none text-[10px] px-2 py-0.5 ${serviceColors[service]?.bg} ${serviceColors[service]?.text}`}
+                          >
+                            {service}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </div>
+
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      checked={category.active}
+                      onCheckedChange={() => toggleCategory(category.id)}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9"
+                      onClick={() => handleEditClick(category)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 text-red-500 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Switch
-                    checked={category.active}
-                    onCheckedChange={() => toggleCategory(category.id)}
-                  />
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 text-red-500 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Link
+                  href={`/admin/services/subcategories?category=${
+                    category.name
+                  }${serviceFromUrl ? `&service=${serviceFromUrl}` : ""}`}
+                  className="px-6 py-5 border-l hover:bg-slate-50 transition-colors flex items-center gap-2 text-primary font-medium"
+                >
+                  View
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
               </div>
-
-              <Link
-                href={`/admin/services/subcategories?category=${
-                  category.name
-                }${serviceFromUrl ? `&service=${serviceFromUrl}` : ""}`}
-                className="px-6 py-5 border-l hover:bg-slate-50 transition-colors flex items-center gap-2 text-primary font-medium"
-              >
-                View
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* Quick Add */}
@@ -343,7 +423,9 @@ function CategoriesPageContent() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add New Category</DialogTitle>
+            <DialogTitle>
+              {editingId ? "Edit Category" : "Add New Category"}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
@@ -414,10 +496,10 @@ function CategoriesPageContent() {
             </Button>
             <Button
               className="bg-[#3E8940] hover:bg-[#3E8940]/90"
-              onClick={handleDialogAdd}
+              onClick={handleDialogSubmit}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add Category
+              {editingId ? "Save Changes" : "Add Category"}
             </Button>
           </DialogFooter>
         </DialogContent>

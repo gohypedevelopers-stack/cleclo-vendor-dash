@@ -21,11 +21,7 @@ const appSections = [
         href: "/admin/home/banners",
         description: "Manage promotional banners",
       },
-      {
-        name: "Services Grid",
-        href: "/admin/home/services",
-        description: "Toggle service visibility",
-      },
+
       {
         name: "Referral Banner",
         href: "/admin/home/referral",
