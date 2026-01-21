@@ -658,7 +658,7 @@ export default function ScheduleDetailPage() {
 
       {/* Delivery Status Timeline */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+        <div className="p-5 border-b border-slate-100 bg-linear-to-r from-slate-50 to-white">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <Truck className="h-5 w-5 text-purple-600" />
             Delivery Status

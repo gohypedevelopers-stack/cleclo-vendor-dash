@@ -110,7 +110,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
     setSelectedImages((prev) =>
       prev.includes(imgUrl)
         ? prev.filter((url) => url !== imgUrl)
-        : [...prev, imgUrl]
+        : [...prev, imgUrl],
     );
   };
 
@@ -180,7 +180,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
                     <Badge
                       className={cn(
                         "mt-1 border-0 px-1.5 py-0 text-[10px] uppercase font-bold tracking-wide rounded-md",
-                        getBadgeColor(item.type)
+                        getBadgeColor(item.type),
                       )}
                     >
                       {item.service}
@@ -203,11 +203,14 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
               <div className="p-6 max-h-[70vh] overflow-y-auto bg-slate-50/30 scrollbar-primary">
                 <div className="space-y-6 pb-4">
                   {Object.entries(
-                    SAMPLE_ITEMS.reduce((acc, item) => {
-                      if (!acc[item.type]) acc[item.type] = [];
-                      acc[item.type].push(item);
-                      return acc;
-                    }, {} as Record<string, typeof SAMPLE_ITEMS>)
+                    SAMPLE_ITEMS.reduce(
+                      (acc, item) => {
+                        if (!acc[item.type]) acc[item.type] = [];
+                        acc[item.type].push(item);
+                        return acc;
+                      },
+                      {} as Record<string, typeof SAMPLE_ITEMS>,
+                    ),
                   ).map(([type, items]) => (
                     <div key={type} className="space-y-3">
                       <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-1">
@@ -232,7 +235,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
                               <Badge
                                 className={cn(
                                   "border-0 px-3 py-1 text-[11px] uppercase font-bold tracking-wider rounded-full",
-                                  getBadgeColor(item.type)
+                                  getBadgeColor(item.type),
                                 )}
                               >
                                 {item.type.toUpperCase()}
@@ -250,7 +253,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
                                     className={cn(
                                       "group relative h-16 w-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shadow-sm cursor-pointer transition-all",
                                       isSelected &&
-                                        "ring-2 ring-[#3E8940] ring-offset-2"
+                                        "ring-2 ring-[#3E8940] ring-offset-2",
                                     )}
                                   >
                                     <img
@@ -264,7 +267,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
                                         "absolute inset-0 transition-colors flex items-center justify-center",
                                         isSelected
                                           ? "bg-black/20"
-                                          : "bg-black/0 group-hover:bg-black/5"
+                                          : "bg-black/0 group-hover:bg-black/5",
                                       )}
                                     >
                                       {isSelected && (
@@ -359,7 +362,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
                 </div>
               </div>
             </div>
-            <div className="w-28 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:8px_8px] bg-white relative flex items-center justify-center border-l border-slate-100">
+            <div className="w-28 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[8px_8px] bg-white relative flex items-center justify-center border-l border-slate-100">
               <div className="relative flex items-center justify-center translate-y-[-4px]">
                 <MapPin
                   className="h-14 w-14 text-[#1a1f1c]"
@@ -381,7 +384,7 @@ export function NewOrderModal({ open, onOpenChange }: NewOrderModalProps) {
               <span className="font-bold text-slate-700">Your Earning</span>
             </div>
             <span className="text-2xl font-black text-[#3E8940] tracking-tight">
-              $24.50
+              ₹24.50
             </span>
           </div>
         </div>
