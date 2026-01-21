@@ -1,8 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Calendar,
   Clock,
@@ -13,10 +23,10 @@ import {
   Timer,
   ArrowRight,
   Phone,
-  Navigation,
   Filter,
   ChevronLeft,
   ChevronRight,
+  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -28,10 +38,28 @@ const SCHEDULE_DATA = [
     phone: "+1 (555) 123-4567",
     address: "452 Maple Ave, Apt 4B",
     city: "San Francisco, CA 94110",
-    timeSlot: "9:00 AM - 11:00 AM",
+    date: "Jan 21, 2026",
     items: 5,
     status: "scheduled",
     type: "pickup",
+    rating: 4.8,
+    note: "Coffee stain on front",
+    deliveryType: "Standard",
+    driver: "John Doe",
+    orderItems: [
+      {
+        name: "White Shirt",
+        quantity: 2,
+        image:
+          "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?w=800&auto=format&fit=crop&q=60",
+      },
+      {
+        name: "Black Trousers",
+        quantity: 3,
+        image:
+          "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&auto=format&fit=crop&q=60",
+      },
+    ],
   },
   {
     id: "PU-002",
@@ -40,10 +68,22 @@ const SCHEDULE_DATA = [
     phone: "+1 (555) 234-5678",
     address: "789 Oak Street, Suite 12",
     city: "San Francisco, CA 94102",
-    timeSlot: "11:00 AM - 1:00 PM",
+    date: "Jan 21, 2026",
     items: 3,
     status: "in_progress",
     type: "pickup",
+    rating: 4.9,
+    note: "Oil stain on white shirt collar",
+    deliveryType: "Express 24h",
+    driver: "Mike Smith",
+    orderItems: [
+      {
+        name: "White Shirt",
+        quantity: 3,
+        image:
+          "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?w=800&auto=format&fit=crop&q=60",
+      },
+    ],
   },
   {
     id: "DL-001",
@@ -52,10 +92,12 @@ const SCHEDULE_DATA = [
     phone: "+1 (555) 345-6789",
     address: "156 Pine Road",
     city: "San Francisco, CA 94108",
-    timeSlot: "2:00 PM - 4:00 PM",
+    date: "Jan 21, 2026",
     items: 8,
-    status: "completed",
+    status: "scheduled",
     type: "delivery",
+    rating: 4.7,
+    deliveryType: "Standard",
   },
   {
     id: "PU-003",
@@ -64,10 +106,28 @@ const SCHEDULE_DATA = [
     phone: "+1 (555) 456-7890",
     address: "321 Cedar Lane, Unit 5",
     city: "San Francisco, CA 94114",
-    timeSlot: "4:00 PM - 6:00 PM",
+    date: "Jan 21, 2026",
     items: 4,
     status: "scheduled",
     type: "pickup",
+    rating: 5.0,
+    note: "Delicate silk items",
+    deliveryType: "Express 48h",
+    driver: "Sarah Wilson",
+    orderItems: [
+      {
+        name: "Silk Blouse",
+        quantity: 2,
+        image:
+          "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&auto=format&fit=crop&q=60",
+      },
+      {
+        name: "Silk Scarf",
+        quantity: 2,
+        image:
+          "https://images.unsplash.com/photo-1584030373081-f37b7bb4fa8e?w=800&auto=format&fit=crop&q=60",
+      },
+    ],
   },
   {
     id: "DL-002",
@@ -76,18 +136,92 @@ const SCHEDULE_DATA = [
     phone: "+1 (555) 567-8901",
     address: "888 Birch Boulevard",
     city: "San Francisco, CA 94117",
-    timeSlot: "6:00 PM - 8:00 PM",
+    date: "Jan 21, 2026",
     items: 6,
     status: "scheduled",
     type: "delivery",
+    rating: 4.6,
+    deliveryType: "Express 24h",
+  },
+  {
+    id: "DL-003",
+    orderId: "#284-9308",
+    customer: "Robert Taylor",
+    phone: "+1 (555) 678-9012",
+    address: "456 Pine St",
+    city: "San Francisco, CA 94109",
+    date: "Jan 21, 2026",
+    items: 3,
+    status: "scheduled",
+    type: "delivery",
+    rating: 4.8,
+    deliveryType: "Express 48h",
+  },
+  {
+    id: "PU-005",
+    orderId: "#284-9330",
+    customer: "Michael Brown",
+    rating: 4.7,
+    phone: "+1 (555) 456-7890",
+    address: "220 Elm St, Apt 5C",
+    city: "San Francisco, CA 94103",
+    date: "Jan 21, 2026",
+    items: 2,
+    status: "not_scheduled",
+    type: "pickup",
+    note: "Color bleed risk on red dress",
+    deliveryType: "Standard",
+    orderItems: [
+      {
+        name: "Red Dress",
+        quantity: 1,
+        image:
+          "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=60",
+      },
+      {
+        name: "Cotton T-Shirt",
+        quantity: 1,
+        image:
+          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=60",
+      },
+    ],
+  },
+  {
+    id: "PU-006",
+    orderId: "#284-9335",
+    customer: "David Lee",
+    rating: 4.5,
+    phone: "+1 (555) 987-6543",
+    address: "789 Pine St",
+    city: "San Francisco, CA 94108",
+    date: "Jan 21, 2026",
+    items: 7,
+    status: "not_scheduled",
+    type: "pickup",
+    note: "Grass stains on knees",
+    deliveryType: "Express 24h",
+    orderItems: [
+      {
+        name: "Blue Jeans",
+        quantity: 4,
+        image:
+          "https://images.unsplash.com/photo-1604176354204-9268737828fa?w=800&auto=format&fit=crop&q=60",
+      },
+      {
+        name: "Kids T-Shirt",
+        quantity: 3,
+        image:
+          "https://images.unsplash.com/photo-1519241047957-be31d7379a5d?w=800&auto=format&fit=crop&q=60",
+      },
+    ],
   },
 ];
 
-const getStatusConfig = (status: string) => {
+const getStatusConfig = (status: string, type: string) => {
   switch (status) {
     case "scheduled":
       return {
-        label: "Scheduled",
+        label: type === "pickup" ? "Pickup" : "Delivery Scheduled",
         className: "bg-blue-100 text-blue-700 border-blue-200",
         icon: Timer,
       };
@@ -102,6 +236,12 @@ const getStatusConfig = (status: string) => {
         label: "Completed",
         className: "bg-green-100 text-green-700 border-green-200",
         icon: CheckCircle2,
+      };
+    case "not_scheduled":
+      return {
+        label: "Not Scheduled",
+        className: "bg-gray-100 text-gray-700 border-gray-200",
+        icon: Clock,
       };
     default:
       return {
@@ -132,17 +272,49 @@ const getTypeConfig = (type: string) => {
   }
 };
 
+const getDeliveryBadgeColor = (type?: string) => {
+  switch (type) {
+    case "Express 24h":
+      return "bg-red-100 text-red-700 border-red-200";
+    case "Express 48h":
+      return "bg-orange-100 text-orange-700 border-orange-200";
+    default:
+      return "bg-blue-50 text-blue-700 border-blue-200";
+  }
+};
+
 export function PickupSchedule() {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [isVerificationOpen, setIsVerificationOpen] = useState(false);
+  const [verifiedItems, setVerifiedItems] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const handleOpenVerification = (order: any) => {
+    setSelectedOrder(order);
+    setVerifiedItems({});
+    setIsVerificationOpen(true);
+  };
+
+  const handleVerifyItem = (itemName: string) => {
+    setVerifiedItems((prev) => ({
+      ...prev,
+      [itemName]: !prev[itemName],
+    }));
+  };
+
+  const handleConfirmVerification = () => {
+    setIsVerificationOpen(false);
+    // Here you would typically make an API call to update the status
+    console.log("Verified items:", verifiedItems);
+  };
 
   const todayPickups = SCHEDULE_DATA.filter((s) => s.type === "pickup").length;
-  const todayDeliveries = SCHEDULE_DATA.filter(
-    (s) => s.type === "delivery"
-  ).length;
   const completed = SCHEDULE_DATA.filter(
-    (s) => s.status === "completed"
+    (s) => s.status === "completed",
   ).length;
-  const pending = SCHEDULE_DATA.filter((s) => s.status !== "completed").length;
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -201,7 +373,7 @@ export function PickupSchedule() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
@@ -214,32 +386,6 @@ export function PickupSchedule() {
               <p className="text-xs text-slate-500 font-medium">
                 Pickups Today
               </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
-              <Package className="h-5 w-5 text-emerald-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">
-                {todayDeliveries}
-              </p>
-              <p className="text-xs text-slate-500 font-medium">
-                Deliveries Today
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
-              <Timer className="h-5 w-5 text-orange-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">{pending}</p>
-              <p className="text-xs text-slate-500 font-medium">Pending</p>
             </div>
           </div>
         </div>
@@ -270,9 +416,11 @@ export function PickupSchedule() {
 
         {/* Table Header */}
         <div className="hidden md:grid md:grid-cols-12 gap-4 px-6 py-3 bg-slate-50 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-          <div className="col-span-2">Time Slot</div>
-          <div className="col-span-3">Customer</div>
-          <div className="col-span-3">Address</div>
+          <div className="col-span-2">Date</div>
+          <div className="col-span-1">Rating</div>
+          <div className="col-span-2">Delivery Person</div>
+          <div className="col-span-2">Message</div>
+          <div className="col-span-1">Speed</div>
           <div className="col-span-1 text-center">Items</div>
           <div className="col-span-1 text-center">Status</div>
           <div className="col-span-2 text-right">Actions</div>
@@ -280,219 +428,297 @@ export function PickupSchedule() {
 
         {/* Table Body */}
         <div className="divide-y divide-slate-100">
-          {SCHEDULE_DATA.map((schedule, index) => {
-            const statusConfig = getStatusConfig(schedule.status);
-            const typeConfig = getTypeConfig(schedule.type);
-            const StatusIcon = statusConfig.icon;
+          {SCHEDULE_DATA.filter(
+            (s) =>
+              s.type === "pickup" &&
+              (s.status === "scheduled" ||
+                s.status === "in_progress" ||
+                s.status === "not_scheduled"),
+          )
+            .sort((a, b) => {
+              const getStatusWeight = (status: string) => {
+                if (status === "not_scheduled") return 0;
+                if (status === "in_progress") return 1;
+                return 2;
+              };
+              return getStatusWeight(a.status) - getStatusWeight(b.status);
+            })
+            .map((schedule, index) => {
+              const statusConfig = getStatusConfig(
+                schedule.status,
+                schedule.type,
+              );
+              const typeConfig = getTypeConfig(schedule.type);
+              const StatusIcon = statusConfig.icon;
 
-            return (
-              <div
-                key={schedule.id}
-                className={cn(
-                  "group px-6 py-4 hover:bg-slate-50/80 transition-all cursor-pointer",
-                  schedule.status === "completed" && "opacity-60"
-                )}
-              >
-                {/* Desktop Layout */}
-                <div className="hidden md:grid md:grid-cols-12 gap-4 items-center">
-                  {/* Time Slot */}
-                  <div className="col-span-2">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "h-10 w-10 rounded-lg flex items-center justify-center shrink-0",
-                          schedule.type === "pickup"
-                            ? "bg-purple-50"
-                            : "bg-emerald-50"
-                        )}
-                      >
-                        {schedule.type === "pickup" ? (
-                          <Truck className="h-5 w-5 text-purple-600" />
-                        ) : (
-                          <Package className="h-5 w-5 text-emerald-600" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-slate-900 text-sm whitespace-nowrap">
-                          {schedule.timeSlot.split(" - ")[0]}
-                        </p>
-                        <p className="text-xs text-slate-400">
-                          {schedule.timeSlot.split(" - ")[1]}
-                        </p>
+              return (
+                <div
+                  key={schedule.id}
+                  className={cn(
+                    "group px-6 py-4 hover:bg-slate-50/80 transition-all cursor-pointer",
+                    schedule.status === "completed" && "opacity-60",
+                  )}
+                >
+                  {/* Desktop Layout */}
+                  <div className="hidden md:grid md:grid-cols-12 gap-4 items-center">
+                    {/* Date */}
+                    <div className="col-span-2">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={cn(
+                            "h-10 w-10 rounded-lg flex items-center justify-center shrink-0",
+                            schedule.type === "pickup"
+                              ? "bg-purple-50"
+                              : "bg-emerald-50",
+                          )}
+                        >
+                          {schedule.type === "pickup" ? (
+                            <Truck className="h-5 w-5 text-purple-600" />
+                          ) : (
+                            <Package className="h-5 w-5 text-emerald-600" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900 text-sm whitespace-nowrap">
+                            {schedule.date}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Customer */}
-                  <div className="col-span-3">
-                    <p className="font-semibold text-slate-900">
-                      {schedule.customer}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
+                    {/* Customer */}
+                    <div className="col-span-1">
+                      <div className="flex items-center gap-1.5 text-amber-500 text-sm mt-0.5">
+                        <span className="font-bold">{schedule.rating}</span>
+                        <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                      </div>
+                      <div className="text-xs text-slate-400 mt-0.5">
+                        {schedule.orderId}
+                      </div>
+                    </div>
+
+                    {/* Driver */}
+                    <div className="col-span-2">
+                      {schedule.driver ? (
+                        <p className="font-medium text-slate-900 text-sm">
+                          {schedule.driver}
+                        </p>
+                      ) : (
+                        <p className="font-medium text-red-500 text-sm italic">
+                          Not Assigned
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Message */}
+                    <div className="col-span-2">
+                      <p className="text-sm text-slate-600 italic truncate">
+                        {schedule.note || "-"}
+                      </p>
+                    </div>
+
+                    {/* Speed */}
+                    <div className="col-span-1">
                       <Badge
                         className={cn(
-                          "border-0 px-2 py-0 text-[10px] uppercase font-bold",
-                          typeConfig.className
+                          "border px-2.5 py-0.5 whitespace-nowrap",
+                          getDeliveryBadgeColor(schedule.deliveryType),
                         )}
                       >
-                        {typeConfig.label}
+                        {schedule.deliveryType || "Standard"}
                       </Badge>
-                      <span className="text-xs text-slate-400">
-                        {schedule.orderId}
-                      </span>
                     </div>
-                  </div>
 
-                  {/* Address */}
-                  <div className="col-span-3">
-                    <div className="flex items-start gap-2">
-                      <MapPin className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-sm text-slate-700 leading-tight">
-                          {schedule.address}
-                        </p>
-                        <p className="text-xs text-slate-400">
-                          {schedule.city}
-                        </p>
+                    {/* Items */}
+                    <div className="col-span-1 text-center">
+                      <div className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
+                        {schedule.items}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Items */}
-                  <div className="col-span-1 text-center">
-                    <div className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
-                      {schedule.items}
+                    {/* Status */}
+                    <div className="col-span-1 flex justify-center">
+                      <Badge
+                        className={cn(
+                          "gap-1 px-2.5 py-1 text-[11px] font-semibold border whitespace-nowrap",
+                          statusConfig.className,
+                        )}
+                      >
+                        <StatusIcon className="h-3 w-3" />
+                        {statusConfig.label}
+                      </Badge>
                     </div>
-                  </div>
 
-                  {/* Status */}
-                  <div className="col-span-1 flex justify-center">
-                    <Badge
-                      className={cn(
-                        "gap-1 px-2.5 py-1 text-[11px] font-semibold border whitespace-nowrap",
-                        statusConfig.className
-                      )}
-                    >
-                      <StatusIcon className="h-3 w-3" />
-                      {statusConfig.label}
-                    </Badge>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="col-span-2 flex items-center justify-end gap-2">
-                    {schedule.status !== "completed" && (
+                    {/* Actions */}
+                    <div className="col-span-2 flex items-center justify-end gap-2">
                       <Button
                         size="sm"
                         className="h-8 px-4 bg-[#3E8940] hover:bg-[#3E8940]/90 text-xs font-semibold"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/dashboard/schedule/${schedule.id}`);
+                        }}
                       >
-                        {schedule.status === "in_progress"
-                          ? "Complete"
-                          : "Start"}
+                        View
                         <ArrowRight className="h-3.5 w-3.5 ml-1" />
                       </Button>
-                    )}
-                    {schedule.status === "completed" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 px-4 text-xs font-semibold text-green-600 border-green-200 hover:bg-green-50"
-                      >
-                        <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
-                        Done
-                      </Button>
-                    )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Mobile Layout */}
-                <div className="md:hidden space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "h-10 w-10 rounded-lg flex items-center justify-center",
-                          schedule.type === "pickup"
-                            ? "bg-purple-50"
-                            : "bg-emerald-50"
-                        )}
-                      >
-                        {schedule.type === "pickup" ? (
-                          <Truck className="h-5 w-5 text-purple-600" />
-                        ) : (
-                          <Package className="h-5 w-5 text-emerald-600" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-slate-900">
-                          {schedule.timeSlot}
-                        </p>
-                        <Badge
+                  {/* Mobile Layout */}
+                  <div className="md:hidden space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
                           className={cn(
-                            "mt-1 border-0 px-2 py-0 text-[10px] uppercase font-bold",
-                            typeConfig.className
+                            "h-10 w-10 rounded-lg flex items-center justify-center",
+                            schedule.type === "pickup"
+                              ? "bg-purple-50"
+                              : "bg-emerald-50",
                           )}
                         >
-                          {typeConfig.label}
-                        </Badge>
+                          {schedule.type === "pickup" ? (
+                            <Truck className="h-5 w-5 text-purple-600" />
+                          ) : (
+                            <Package className="h-5 w-5 text-emerald-600" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900">
+                            {schedule.date}
+                          </p>
+                          <Badge
+                            className={cn(
+                              "mt-1 border-0 px-2 py-0 text-[10px] uppercase font-bold",
+                              typeConfig.className,
+                            )}
+                          >
+                            {typeConfig.label}
+                          </Badge>
+                        </div>
+                      </div>
+                      <Badge
+                        className={cn(
+                          "gap-1 px-2 py-1 text-[10px] font-semibold border",
+                          statusConfig.className,
+                        )}
+                      >
+                        <StatusIcon className="h-3 w-3" />
+                        {statusConfig.label}
+                      </Badge>
+                    </div>
+
+                    <div className="pl-13">
+                      <div className="flex items-center gap-1.5 text-amber-500 text-sm mt-0.5">
+                        <span className="text-slate-500 text-xs">Rating:</span>
+                        <span className="font-bold">{schedule.rating}</span>
+                        <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                      </div>
+                      <div className="text-xs text-slate-400 mt-0.5 font-medium">
+                        {schedule.orderId}
+                      </div>
+                      <p className="text-sm text-slate-500 mt-0.5">
+                        {schedule.status !== "completed"
+                          ? "*****"
+                          : schedule.address}
+                        , {schedule.city}
+                      </p>
+                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <Package className="h-3.5 w-3.5" />
+                          {schedule.items} items
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Phone className="h-3.5 w-3.5" />
+                          {schedule.phone}
+                        </span>
                       </div>
                     </div>
-                    <Badge
-                      className={cn(
-                        "gap-1 px-2 py-1 text-[10px] font-semibold border",
-                        statusConfig.className
-                      )}
-                    >
-                      <StatusIcon className="h-3 w-3" />
-                      {statusConfig.label}
-                    </Badge>
-                  </div>
 
-                  <div className="pl-13">
-                    <p className="font-semibold text-slate-900">
-                      {schedule.customer}
-                    </p>
-                    <p className="text-sm text-slate-500 mt-0.5">
-                      {schedule.address}, {schedule.city}
-                    </p>
-                    <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <Package className="h-3.5 w-3.5" />
-                        {schedule.items} items
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Phone className="h-3.5 w-3.5" />
-                        {schedule.phone}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 pt-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 h-9 gap-1.5"
-                    >
-                      <Navigation className="h-4 w-4" />
-                      Navigate
-                    </Button>
-                    {schedule.status !== "completed" && (
+                    <div className="flex gap-2 pt-2">
                       <Button
                         size="sm"
-                        className="flex-1 h-9 bg-[#3E8940] hover:bg-[#3E8940]/90 gap-1.5"
+                        className="h-8 px-4 bg-[#3E8940] hover:bg-[#3E8940]/90 gap-1.5"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/dashboard/schedule/${schedule.id}`);
+                        }}
                       >
-                        {schedule.status === "in_progress"
-                          ? "Complete"
-                          : "Start"}
+                        View
                         <ArrowRight className="h-4 w-4" />
                       </Button>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
+
+      <Dialog open={isVerificationOpen} onOpenChange={setIsVerificationOpen}>
+        <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Verify Items</DialogTitle>
+            <DialogDescription>
+              Please verify the items for {selectedOrder?.orderId}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-3 py-4">
+            {selectedOrder?.orderItems
+              ?.flatMap((item: any) =>
+                Array.from({ length: item.quantity }).map((_, i) => ({
+                  ...item,
+                  uniqueId: `${item.name}-${i}`,
+                })),
+              )
+              .map((item: any, index: number) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "relative flex flex-col items-center border rounded-lg p-2 cursor-pointer transition-all",
+                    verifiedItems[item.uniqueId]
+                      ? "border-green-500 bg-green-50"
+                      : "border-slate-200 hover:border-slate-300",
+                  )}
+                  onClick={() => handleVerifyItem(item.uniqueId)}
+                >
+                  {item.image && (
+                    <div className="h-20 w-20 rounded-md overflow-hidden mb-2">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <p className="font-medium text-xs text-slate-900 text-center truncate w-full">
+                    {item.name}
+                  </p>
+                  {verifiedItems[item.uniqueId] && (
+                    <div className="absolute top-1 right-1 h-5 w-5 rounded-full bg-green-500 flex items-center justify-center">
+                      <CheckCircle2 className="h-3 w-3 text-white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            {(!selectedOrder?.orderItems ||
+              selectedOrder.orderItems.length === 0) && (
+              <p className="text-sm text-slate-500 italic text-center py-4 col-span-3">
+                No items to verify.
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              className="w-full bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={handleConfirmVerification}
+            >
+              Verify &{" "}
+              {selectedOrder?.status === "in_progress" ? "Complete" : "Start"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -37,14 +37,14 @@ const sidebarItems = [
     icon: Package,
   },
   {
+    title: "Order Onboard",
+    href: "/dashboard/schedule",
+    icon: Truck,
+  },
+  {
     title: "All Orders",
     href: "/dashboard/orders",
     icon: ClipboardList,
-  },
-  {
-    title: "Pickup Schedule",
-    href: "/dashboard/schedule",
-    icon: Truck,
   },
   {
     title: "Earnings",
@@ -74,7 +74,7 @@ export function DashboardSidebar() {
     <div
       className={cn(
         "flex h-full flex-col justify-between border-r bg-card py-4 transition-all duration-300 relative z-40",
-        isCollapsed ? "w-16" : "w-64"
+        isCollapsed ? "w-16" : "w-64",
       )}
     >
       <div className="space-y-4 px-3">
@@ -82,7 +82,7 @@ export function DashboardSidebar() {
           <div
             className={cn(
               "flex items-center mb-8 h-12",
-              isCollapsed ? "justify-center" : "gap-2"
+              isCollapsed ? "justify-center" : "gap-2",
             )}
           >
             {/* Logo Section */}
@@ -119,7 +119,7 @@ export function DashboardSidebar() {
                   isCollapsed ? "justify-center px-2" : "gap-3 px-3",
                   pathname === item.href
                     ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground"
+                    : "text-muted-foreground",
                 )}
               >
                 <item.icon className="h-5 w-5 shrink-0" />
@@ -150,7 +150,7 @@ export function DashboardSidebar() {
               isCollapsed ? "justify-center px-2" : "gap-3 px-3",
               pathname === item.href
                 ? "bg-primary/10 text-primary"
-                : "text-muted-foreground"
+                : "text-muted-foreground",
             )}
           >
             <item.icon className="h-5 w-5 shrink-0" />
