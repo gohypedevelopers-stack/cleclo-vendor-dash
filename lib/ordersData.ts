@@ -66,15 +66,15 @@ export const ORDERS: OrderRecord[] = [
     verification: {
       delivery: {
         verifiedCount: 10,
-        status: "Awaiting pickup",
+        status: "Verified",
         verifiedBy: "John Carter",
-        verifiedAt: "Not yet verified",
+        verifiedAt: "Jan 16, 2026 • 10:45 AM",
       },
       vendor: {
         verifiedCount: 10,
-        status: "Awaiting delivery",
+        status: "Verified",
         verifiedBy: "Clean Express",
-        verifiedAt: "Not yet verified",
+        verifiedAt: "Jan 16, 2026 • 11:30 AM",
       },
     },
   },
