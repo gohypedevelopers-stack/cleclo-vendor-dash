@@ -24,6 +24,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Pencil } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -69,11 +79,27 @@ export default function UserDetailPage() {
   const router = useRouter();
   const userId = params.id;
   const user = USERS.find((u) => u.id === userId);
+  const [userData, setUserData] = useState(user);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    walletBalance: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setUserData(user);
+    }
+  }, [user]);
 
   // Filter orders for this specific customer
-  const userOrders = ORDERS.filter((order) => order.customer === user?.name);
+  const userOrders = ORDERS.filter(
+    (order) => order.customer === userData?.name,
+  );
 
-  if (!user) {
+  if (!userData) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <div className="bg-white/50 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/40 text-center">
@@ -111,18 +137,35 @@ export default function UserDetailPage() {
               </span>
             </div>
             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-slate-900 via-slate-800 to-slate-700">
-              {user.name}
+              {userData.name}
             </h1>
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="hidden md:flex gap-2 border-slate-200"
+            onClick={() => {
+              setEditForm({
+                name: userData.name,
+                email: userData.email,
+                phone: userData.phone,
+                walletBalance: userData.walletBalance,
+              });
+              setIsEditOpen(true);
+            }}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+            Edit Profile
+          </Button>
           <Badge
             className={cn(
               "text-xs px-3 py-1 font-semibold backdrop-blur-md shadow-sm border",
-              getStatusColor(user.status),
+              getStatusColor(userData.status),
             )}
           >
-            {user.status}
+            {userData.status}
           </Badge>
         </div>
       </div>
@@ -137,7 +180,7 @@ export default function UserDetailPage() {
             <div className="px-6 pb-6 -mt-10 relative z-10">
               <Avatar className="h-20 w-20 ring-4 ring-white shadow-lg">
                 <AvatarFallback className="bg-linear-to-br from-slate-800 to-slate-950 text-white text-xl font-bold">
-                  {user.name
+                  {userData.name
                     .split(" ")
                     .map((word) => word[0])
                     .join("")}
@@ -146,10 +189,10 @@ export default function UserDetailPage() {
 
               <div className="mt-3 mb-5">
                 <h2 className="text-xl font-bold text-slate-900">
-                  {user.name}
+                  {userData.name}
                 </h2>
                 <p className="text-xs text-slate-500 font-medium">
-                  Member since {user.joinDate}
+                  Member since {userData.joinDate}
                 </p>
               </div>
 
@@ -163,7 +206,7 @@ export default function UserDetailPage() {
                       Email
                     </span>
                     <p className="text-xs font-semibold text-slate-700 truncate">
-                      {user.email}
+                      {userData.email}
                     </p>
                   </div>
                 </div>
@@ -177,7 +220,7 @@ export default function UserDetailPage() {
                       Phone
                     </span>
                     <p className="text-xs font-semibold text-slate-700">
-                      {user.phone}
+                      {userData.phone}
                     </p>
                   </div>
                 </div>
@@ -204,16 +247,16 @@ export default function UserDetailPage() {
               <Badge
                 className={cn(
                   "border px-2 py-0.5 text-xs font-semibold backdrop-blur-sm",
-                  getTypeColor(user.type),
+                  getTypeColor(userData.type),
                 )}
               >
-                {user.type}
+                {userData.type}
               </Badge>
             </div>
 
             <div className="flex items-baseline gap-1 mb-4">
               <span className="text-4xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-emerald-600 to-emerald-400">
-                {user.walletBalance}
+                {userData.walletBalance}
               </span>
             </div>
 
@@ -228,7 +271,7 @@ export default function UserDetailPage() {
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">
                   Average Order
                 </p>
-                <p className="text-xl font-bold text-slate-800">$45.00</p>
+                <p className="text-xl font-bold text-slate-800">₹45.00</p>
               </div>
             </div>
           </div>
@@ -262,7 +305,7 @@ export default function UserDetailPage() {
                     Active Member
                   </p>
                   <p className="text-[10px] text-slate-500">
-                    Since {user.joinDate}
+                    Since {userData.joinDate}
                   </p>
                 </div>
               </div>
@@ -359,6 +402,90 @@ export default function UserDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Edit User Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit User Details</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <label htmlFor="name" className="text-sm font-medium">
+                Full Name
+              </label>
+              <Input
+                id="name"
+                value={editForm.name}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, name: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium">
+                Email Address
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={editForm.email}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, email: e.target.value })
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="phone" className="text-sm font-medium">
+                  Phone
+                </label>
+                <Input
+                  id="phone"
+                  value={editForm.phone}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="wallet" className="text-sm font-medium">
+                  Wallet Balance
+                </label>
+                <Input
+                  id="wallet"
+                  value={editForm.walletBalance}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, walletBalance: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={() => {
+                if (userData) {
+                  setUserData({
+                    ...userData,
+                    name: editForm.name,
+                    email: editForm.email,
+                    phone: editForm.phone,
+                    walletBalance: editForm.walletBalance,
+                  });
+                  setIsEditOpen(false);
+                }
+              }}
+            >
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

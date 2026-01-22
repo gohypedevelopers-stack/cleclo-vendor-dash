@@ -98,7 +98,7 @@ export function AdminSidebar() {
             className={cn(
               "flex items-center rounded-lg py-2 transition-all hover:text-primary group relative",
               isCollapsed ? "justify-center px-2" : "gap-3 px-3",
-              isActive ? "bg-primary/10 text-primary" : "text-muted-foreground"
+              isActive ? "bg-primary/10 text-primary" : "text-muted-foreground",
             )}
           >
             <item.icon className="h-5 w-5 shrink-0" />
@@ -125,7 +125,7 @@ export function AdminSidebar() {
           <div
             className={cn(
               "flex items-center mb-8 h-12",
-              isCollapsed ? "justify-center" : "gap-2"
+              isCollapsed ? "justify-center" : "gap-2",
             )}
           >
             {isCollapsed ? (
