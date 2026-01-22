@@ -100,7 +100,10 @@ export default function AdminOrderDetailPage() {
     (sum, item) => sum + (item.quantity ?? 1),
     0,
   );
-  const expectedItemCount = Math.max(order.itemCount ?? baseItemCount, baseItemCount);
+  const expectedItemCount = Math.max(
+    order.itemCount ?? baseItemCount,
+    baseItemCount,
+  );
 
   const displayItems =
     orderItems.length > 0
@@ -299,177 +302,184 @@ export default function AdminOrderDetailPage() {
         ))}
       </div>
 
-        <div className="grid gap-5 lg:grid-cols-3">
-          {/* Verification Logic - Admin Aesthetic */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-              <div className="p-4 border-b flex items-center justify-between">
-                <h2 className="text-base font-bold text-black flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
-                    <Package className="h-4 w-4 text-[#3E8940]" />
-                  </div>
-                  Vendor Verification
-                </h2>
-                <Badge className="bg-emerald-100 text-emerald-700 border-none text-xs font-semibold px-3 py-1">
-                  {vendorVerifiedCount}/{totalItemsCount} Verified
-                </Badge>
-              </div>
-              <div className="p-4">
-                <p className="text-[11px] text-slate-500 mb-4 font-medium">
-                  Select items to verify as received by the vendor
-                </p>
-                <div className="grid grid-cols-4 gap-3 mb-6">
-                  {displayItems.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex flex-col items-center border-2 rounded-xl p-3 gap-2 bg-white border-slate-100"
-                    >
-                      <div className="h-14 w-14 rounded-lg overflow-hidden border border-slate-100 shadow-inner">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <p className="text-[10px] font-semibold text-slate-900 text-center line-clamp-1">
-                        {item.name}
-                      </p>
-                    </div>
-                  ))}
+      <div className="grid gap-5 lg:grid-cols-3">
+        {/* Verification Logic - Admin Aesthetic */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            <div className="p-4 border-b flex items-center justify-between">
+              <h2 className="text-base font-bold text-black flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+                  <Package className="h-4 w-4 text-[#3E8940]" />
                 </div>
+                Vendor Verification
+              </h2>
+              <Badge className="bg-emerald-100 text-emerald-700 border-none text-xs font-semibold px-3 py-1">
+                {vendorVerifiedCount}/{totalItemsCount} Verified
+              </Badge>
+            </div>
+            <div className="p-4">
+              <p className="text-[11px] text-slate-500 mb-4 font-medium">
+                Select items to verify as received by the vendor
+              </p>
+              <div className="grid grid-cols-4 gap-3 mb-6">
+                {displayItems.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col items-center border-2 rounded-xl p-3 gap-2 bg-white border-slate-100"
+                  >
+                    <div className="h-14 w-14 rounded-lg overflow-hidden border border-slate-100 shadow-inner">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <p className="text-[10px] font-semibold text-slate-900 text-center line-clamp-1">
+                      {item.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {[
-                    {
-                      title: "Delivery Partner",
-                      status: deliveryVerification.status,
-                      actor: deliveryVerification.verifiedBy,
-                      detail: `${deliveryVerifiedCount}/${totalItemsCount} verified`,
-                      accent: "bg-blue-50 text-blue-700 border-blue-100",
-                      verifiedAt: deliveryVerification.verifiedAt,
-                    },
-                    {
-                      title: "Vendor",
-                      status: vendorVerification.status,
-                      actor: vendorVerification.verifiedBy,
-                      detail: `${vendorVerifiedCount}/${totalItemsCount} verified`,
-                      accent: "bg-emerald-50 text-emerald-700 border-emerald-100",
-                      verifiedAt: vendorVerification.verifiedAt,
-                    },
-                  ].map((stat) => (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  {
+                    title: "Delivery Partner",
+                    status: deliveryVerification.status,
+                    actor: deliveryVerification.verifiedBy,
+                    showDetail:
+                      deliveryVerification.status === "Completed" ||
+                      deliveryVerification.status === "Verified" ||
+                      order.status === "Processing",
+                    detail: `${deliveryVerifiedCount}/${totalItemsCount} verified`,
+                    accent: "bg-blue-50 text-blue-700 border-blue-100",
+                    verifiedAt: deliveryVerification.verifiedAt,
+                  },
+                  {
+                    title: "Vendor",
+                    status: vendorVerification.status,
+                    actor: vendorVerification.verifiedBy,
+                    showDetail:
+                      vendorVerification.status === "Completed" ||
+                      vendorVerification.status === "Verified" ||
+                      order.status === "Processing",
+                    detail: `${vendorVerifiedCount}/${totalItemsCount} verified`,
+                    accent: "bg-emerald-50 text-emerald-700 border-emerald-100",
+                    verifiedAt: vendorVerification.verifiedAt,
+                  },
+                ].map((stat) => (
+                  <div
+                    key={stat.title}
+                    className="flex items-start gap-3 p-3 border rounded-xl bg-white shadow-sm border-slate-100"
+                  >
                     <div
-                      key={stat.title}
-                      className="flex items-start gap-3 p-3 border rounded-xl bg-white shadow-sm border-slate-100"
+                      className={cn(
+                        "h-7 w-7 rounded-full flex items-center justify-center border",
+                        stat.accent,
+                      )}
                     >
-                      <div
-                        className={cn(
-                          "h-7 w-7 rounded-full flex items-center justify-center border",
-                          stat.accent,
-                        )}
-                      >
-                        <CheckCircle2 className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1 text-[11px]">
-                        <p className="font-semibold text-slate-800">
-                          {stat.title} verification
-                        </p>
-                        <p className="text-slate-500">
-                          {stat.status} · {stat.actor}
-                        </p>
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 text-[11px]">
+                      <p className="font-semibold text-slate-800">
+                        {stat.title} verification
+                      </p>
+                      <p className="text-slate-500">
+                        {stat.status} · {stat.actor}
+                      </p>
+                      {stat.showDetail && (
                         <p className="text-[10px] text-slate-400 mt-1">
                           {stat.detail}
                         </p>
-                      </div>
-                      <div className="text-[10px] text-slate-400 self-center">
-                        {stat.verifiedAt}
-                      </div>
+                      )}
                     </div>
-                  ))}
-                </div>
+                    <div className="text-[10px] text-slate-400 self-center">
+                      {stat.verifiedAt}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-            {/* Detailed Item List / History Placeholder */}
-            <div className="bg-white rounded-lg shadow-sm border p-4">
-              <div className="flex items-center justify-between gap-2">
-                <div>
-                  <h2 className="text-base font-bold text-black flex items-center gap-2">
-                    <Truck className="h-5 w-5 text-purple-600" />
-                    Delivery Status
-                  </h2>
-                  <p className="text-xs text-slate-500">
-                    Track the journey of your items
-                  </p>
-                </div>
-                <span className="text-[11px] text-slate-400">Updated Today</span>
+          {/* Detailed Item List / History Placeholder */}
+          <div className="bg-white rounded-lg shadow-sm border p-4">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <h2 className="text-base font-bold text-black flex items-center gap-2">
+                  <Truck className="h-5 w-5 text-purple-600" />
+                  Delivery Status
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Track the journey of your items
+                </p>
               </div>
-              <div className="relative pl-8 mt-6 space-y-6 before:absolute before:left-[11px] before:top-3 before:bottom-3 before:w-[1px] before:bg-slate-100">
-                {timelineSteps.map((step) => {
-                  const Icon = step.icon;
-                  const stepState =
-                    step.stage < currentStageIndex
-                      ? "completed"
-                      : step.stage === currentStageIndex
-                        ? "current"
-                        : "upcoming";
-                  const badgeBg =
-                    stepState === "completed"
-                      ? "bg-emerald-500"
-                      : stepState === "current"
-                        ? "bg-amber-500"
-                        : "bg-slate-200";
-                  return (
+              <span className="text-[11px] text-slate-400">Updated Today</span>
+            </div>
+            <div className="relative pl-8 mt-6 space-y-6 before:absolute before:left-[11px] before:top-3 before:bottom-3 before:w-[1px] before:bg-slate-100">
+              {timelineSteps.map((step) => {
+                const Icon = step.icon;
+                const stepState =
+                  step.stage < currentStageIndex
+                    ? "completed"
+                    : step.stage === currentStageIndex
+                      ? "current"
+                      : "upcoming";
+                const badgeBg =
+                  stepState === "completed"
+                    ? "bg-emerald-500"
+                    : stepState === "current"
+                      ? "bg-amber-500"
+                      : "bg-slate-200";
+                return (
+                  <div key={`${step.title}-${step.stage}`} className="relative">
                     <div
-                      key={`${step.title}-${step.stage}`}
-                      className="relative"
+                      className={cn(
+                        "absolute -left-10 h-8 w-8 rounded-full border-4 border-white shadow-sm z-10 flex items-center justify-center transition-all",
+                        badgeBg,
+                      )}
                     >
-                      <div
-                        className={cn(
-                          "absolute -left-10 h-8 w-8 rounded-full border-4 border-white shadow-sm z-10 flex items-center justify-center transition-all",
-                          badgeBg,
-                        )}
-                      >
-                        <Icon className="h-4 w-4 text-white" />
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between gap-3">
-                          <p
-                            className={cn(
-                              "font-semibold text-sm",
-                              stepState === "upcoming" && "text-slate-400",
-                            )}
-                          >
-                            {step.title}
-                          </p>
-                          {step.time && (
-                            <span className="text-[11px] text-slate-400">
-                              {step.time}
-                            </span>
-                          )}
-                        </div>
+                      <Icon className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between gap-3">
                         <p
                           className={cn(
-                            "text-xs",
-                            stepState === "upcoming"
-                              ? "text-slate-400"
-                              : "text-slate-500",
+                            "font-semibold text-sm",
+                            stepState === "upcoming" && "text-slate-400",
                           )}
                         >
-                          {step.description}
+                          {step.title}
                         </p>
-                        {step.note && stepState === "current" && (
-                          <div className="mt-2 rounded-xl border border-amber-100 bg-amber-50/70 px-3 py-2 text-[12px] text-amber-700 flex items-center gap-2">
-                            <Clock className="h-3.5 w-3.5" />
-                            {step.note}
-                          </div>
+                        {step.time && (
+                          <span className="text-[11px] text-slate-400">
+                            {step.time}
+                          </span>
                         )}
                       </div>
+                      <p
+                        className={cn(
+                          "text-xs",
+                          stepState === "upcoming"
+                            ? "text-slate-400"
+                            : "text-slate-500",
+                        )}
+                      >
+                        {step.description}
+                      </p>
+                      {step.note && stepState === "current" && (
+                        <div className="mt-2 rounded-xl border border-amber-100 bg-amber-50/70 px-3 py-2 text-[12px] text-amber-700 flex items-center gap-2">
+                          <Clock className="h-3.5 w-3.5" />
+                          {step.note}
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+        </div>
 
         {/* Right Sidebar - Entity Details */}
         <div className="space-y-4">
