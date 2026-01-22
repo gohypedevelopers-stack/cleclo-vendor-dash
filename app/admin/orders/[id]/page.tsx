@@ -402,6 +402,94 @@ export default function AdminOrderDetailPage() {
             </div>
           </div>
 
+          {/* Support Section - Moved Here */}
+          <div className="bg-white rounded-lg shadow-sm border p-4">
+            <h3 className="text-base font-bold text-black flex items-center gap-2 mb-4">
+              <Phone className="h-5 w-5 text-[#3E8940]" />
+              Support
+            </h3>
+            <div className="grid gap-3 ">
+              {[
+                {
+                  label: "Client",
+                  name: order.customer,
+                  status: "No Issues",
+                  statusColor: "bg-slate-100 text-slate-500",
+                  icon: User,
+                  avatarColor: "bg-blue-100 text-blue-600",
+                },
+                {
+                  label: "Vendor",
+                  name: order.vendor,
+                  status: "1 Open Ticket",
+                  statusColor: "bg-amber-100 text-amber-700",
+                  icon: Package,
+                  avatarColor: "bg-purple-100 text-purple-600",
+                },
+                {
+                  label: "Delivery",
+                  name:
+                    order.pickupPerson === "Pending"
+                      ? "Not Assigned"
+                      : order.pickupPerson,
+                  status: "No Issues",
+                  statusColor: "bg-slate-100 text-slate-500",
+                  icon: Truck,
+                  avatarColor: "bg-amber-100 text-amber-600",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col p-3 border rounded-xl hover:bg-slate-50 transition-colors gap-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={cn(
+                          "h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs",
+                          item.avatarColor,
+                        )}
+                      >
+                        {item.name === "Not Assigned"
+                          ? "?"
+                          : item.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                          {item.label}
+                        </p>
+                        <p className="text-sm font-bold text-black line-clamp-1">
+                          {item.name}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-slate-300 hover:text-[#3E8940]"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                    <span className="text-[10px] font-medium text-slate-400">
+                      Status
+                    </span>
+                    <Badge
+                      className={cn(
+                        "border-none text-[10px] font-medium px-2 py-0.5 h-5",
+                        item.statusColor,
+                      )}
+                    >
+                      {item.status}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Detailed Item List / History Placeholder */}
           <div className="bg-white rounded-lg shadow-sm border p-4">
             <div className="flex items-center justify-between gap-2">
@@ -594,7 +682,6 @@ export default function AdminOrderDetailPage() {
             </div>
           </div>
 
-          {/* Special Note Card - Admin Themed */}
           <div className="bg-amber-50 border border-amber-100 rounded-xl p-6 relative overflow-hidden">
             <div className="flex items-start gap-4 relative z-10">
               <div className="h-10 w-10 rounded-lg bg-amber-500 flex items-center justify-center shadow-md shadow-amber-200 shrink-0">

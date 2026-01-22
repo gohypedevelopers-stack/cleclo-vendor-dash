@@ -12,7 +12,6 @@ import {
   Wallet,
   Ban,
   Eye,
-  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,29 +78,11 @@ export default function UsersPage() {
   const [userList, setUserList] = useState(users);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [isAddressOpen, setIsAddressOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<(typeof USERS)[0] | null>(
     null,
   );
-  const [editForm, setEditForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    walletBalance: "",
-  });
-
-  const handleEditClick = (user: (typeof USERS)[0]) => {
-    setSelectedUser(user);
-    setEditForm({
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      walletBalance: user.walletBalance,
-    });
-    setIsEditOpen(true);
-  };
 
   const handleManageWallet = (user: (typeof USERS)[0]) => {
     setSelectedUser(user);
@@ -128,25 +109,6 @@ export default function UsersPage() {
 
   const handleViewDetails = (user: (typeof USERS)[0]) => {
     router.push(`/admin/users/${user.id}`);
-  };
-
-  const handleSaveEdit = () => {
-    if (!selectedUser) return;
-
-    setUserList((prev) =>
-      prev.map((u) =>
-        u.id === selectedUser.id
-          ? {
-              ...u,
-              name: editForm.name,
-              email: editForm.email,
-              phone: editForm.phone,
-              walletBalance: editForm.walletBalance,
-            }
-          : u,
-      ),
-    );
-    setIsEditOpen(false);
   };
 
   const filteredUsers = userList.filter((user) => {
@@ -292,14 +254,6 @@ export default function UsersPage() {
                 </TableCell>
                 <TableCell className="text-right pr-6">
                   <div className="flex items-center justify-end gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-slate-500 hover:text-[#3E8940] hover:bg-[#3E8940]/10"
-                      onClick={() => handleEditClick(user)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -360,77 +314,6 @@ export default function UsersPage() {
       </div>
 
       {/* Edit User Dialog */}
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit User Details</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">
-                Full Name
-              </label>
-              <Input
-                id="name"
-                value={editForm.name}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, name: e.target.value })
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email Address
-              </label>
-              <Input
-                id="email"
-                type="email"
-                value={editForm.email}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, email: e.target.value })
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="phone" className="text-sm font-medium">
-                  Phone
-                </label>
-                <Input
-                  id="phone"
-                  value={editForm.phone}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, phone: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="wallet" className="text-sm font-medium">
-                  Wallet Balance
-                </label>
-                <Input
-                  id="wallet"
-                  value={editForm.walletBalance}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, walletBalance: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
-              onClick={handleSaveEdit}
-            >
-              Save Changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Manage Wallet Dialog */}
       <Dialog open={isWalletOpen} onOpenChange={setIsWalletOpen}>
