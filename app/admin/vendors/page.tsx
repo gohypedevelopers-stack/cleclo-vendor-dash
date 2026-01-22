@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { VENDORS } from "@/lib/vendorsData";
 import {
   Search,
   Filter,
@@ -49,87 +51,6 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 
-const vendors = [
-  {
-    id: "VND-001",
-    name: "Clean Express",
-    owner: "Rajesh Kumar",
-    phone: "+91 98765 43210",
-    location: "Andheri West, Mumbai",
-    status: "Active",
-    rating: 4.8,
-    completionRate: 96,
-    totalOrders: 245,
-    pendingPayout: "₹12,500",
-    joinedDate: "Mar 15, 2024",
-  },
-  {
-    id: "VND-002",
-    name: "Sparkle Wash",
-    owner: "Amit Patel",
-    phone: "+91 87654 32109",
-    location: "Bandra, Mumbai",
-    status: "Active",
-    rating: 4.6,
-    completionRate: 94,
-    totalOrders: 189,
-    pendingPayout: "₹8,200",
-    joinedDate: "May 20, 2024",
-  },
-  {
-    id: "VND-003",
-    name: "Fresh Laundry",
-    owner: "Suman Singh",
-    phone: "+91 76543 21098",
-    location: "Powai, Mumbai",
-    status: "Active",
-    rating: 4.9,
-    completionRate: 98,
-    totalOrders: 312,
-    pendingPayout: "₹15,800",
-    joinedDate: "Jan 10, 2024",
-  },
-  {
-    id: "VND-004",
-    name: "Quick Clean",
-    owner: "Neha Gupta",
-    phone: "+91 65432 10987",
-    location: "Juhu, Mumbai",
-    status: "Suspended",
-    rating: 3.2,
-    completionRate: 78,
-    totalOrders: 56,
-    pendingPayout: "₹2,100",
-    joinedDate: "Sep 5, 2024",
-  },
-  {
-    id: "VND-005",
-    name: "Fresh Fold Services",
-    owner: "Vikram Rao",
-    phone: "+91 54321 09876",
-    location: "Thane, Mumbai",
-    status: "Pending",
-    rating: 0,
-    completionRate: 0,
-    totalOrders: 0,
-    pendingPayout: "₹0",
-    joinedDate: "Jan 14, 2026",
-  },
-  {
-    id: "VND-006",
-    name: "Urban Laundry Co",
-    owner: "Priya Sharma",
-    phone: "+91 43210 98765",
-    location: "Malad, Mumbai",
-    status: "Pending",
-    rating: 0,
-    completionRate: 0,
-    totalOrders: 0,
-    pendingPayout: "₹0",
-    joinedDate: "Jan 13, 2026",
-  },
-];
-
 const getStatusColor = (status: string) => {
   switch (status) {
     case "Active":
@@ -144,13 +65,13 @@ const getStatusColor = (status: string) => {
 };
 
 export default function VendorsPage() {
-  const [vendorList, setVendorList] = useState(vendors);
+  const router = useRouter(); // Initialize router
+  const [vendorList, setVendorList] = useState(VENDORS);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedVendor, setSelectedVendor] = useState<
-    (typeof vendors)[0] | null
+    (typeof VENDORS)[0] | null
   >(null);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     name: "",
@@ -165,12 +86,11 @@ export default function VendorsPage() {
     );
   };
 
-  const handleViewDetails = (vendor: (typeof vendors)[0]) => {
-    setSelectedVendor(vendor);
-    setIsDetailsOpen(true);
+  const handleViewDetails = (vendor: (typeof VENDORS)[0]) => {
+    router.push(`/admin/vendors/${vendor.id}`);
   };
 
-  const handleEditClick = (vendor: (typeof vendors)[0]) => {
+  const handleEditClick = (vendor: (typeof VENDORS)[0]) => {
     setSelectedVendor(vendor);
     setEditForm({
       name: vendor.name,
@@ -472,7 +392,7 @@ export default function VendorsPage() {
         </Table>
         <div className="flex items-center justify-between p-4 border-t">
           <p className="text-sm text-slate-500">
-            Showing {filteredVendors.length} of {vendors.length} vendors
+            Showing {filteredVendors.length} of {VENDORS.length} vendors
           </p>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled>
@@ -484,110 +404,6 @@ export default function VendorsPage() {
           </div>
         </div>
       </div>
-
-      {/* Vendor Details Dialog */}
-      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Vendor Details</DialogTitle>
-          </DialogHeader>
-          {selectedVendor && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16 border">
-                  <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
-                    {selectedVendor.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-lg font-bold text-black">
-                    {selectedVendor.name}
-                  </h3>
-                  <Badge
-                    className={`${getStatusColor(
-                      selectedVendor.status,
-                    )} border-none mt-1`}
-                  >
-                    {selectedVendor.status}
-                  </Badge>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <p className="text-xs text-slate-500 font-medium uppercase">
-                    Owner Name
-                  </p>
-                  <p className="text-sm font-medium">{selectedVendor.owner}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-slate-500 font-medium uppercase">
-                    Phone
-                  </p>
-                  <p className="text-sm font-medium">{selectedVendor.phone}</p>
-                </div>
-                <div className="col-span-2 space-y-1">
-                  <p className="text-xs text-slate-500 font-medium uppercase">
-                    Location
-                  </p>
-                  <p className="text-sm font-medium">
-                    {selectedVendor.location}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-slate-500 font-medium uppercase">
-                    Joined Date
-                  </p>
-                  <p className="text-sm font-medium">
-                    {selectedVendor.joinedDate}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-slate-500 font-medium uppercase">
-                    Vendor ID
-                  </p>
-                  <p className="text-sm font-medium font-mono">
-                    {selectedVendor.id}
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-4 grid grid-cols-3 gap-2 text-center">
-                <div>
-                  <p className="text-xs text-slate-500 mb-1">Total Orders</p>
-                  <p className="text-lg font-bold text-black">
-                    {selectedVendor.totalOrders}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-1">Rating</p>
-                  <div className="flex items-center justify-center gap-1">
-                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                    <p className="text-lg font-bold text-black">
-                      {selectedVendor.rating || "-"}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 mb-1">Pending</p>
-                  <p className="text-lg font-bold text-[#3E8940]">
-                    {selectedVendor.pendingPayout}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Edit Vendor Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
