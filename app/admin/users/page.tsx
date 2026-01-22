@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Search,
@@ -24,7 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,64 +46,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { USERS } from "@/lib/usersData";
 
-const users = [
-  {
-    id: "USR-001",
-    name: "Alice Freeman",
-    email: "alice@example.com",
-    phone: "+91 98765 43210",
-    walletBalance: "₹1,250",
-    totalOrders: 28,
-    status: "Active",
-    type: "VIP",
-    joinedDate: "Jan 12, 2024",
-  },
-  {
-    id: "USR-002",
-    name: "Mark Wilson",
-    email: "mark.w@example.com",
-    phone: "+91 87654 32109",
-    walletBalance: "₹500",
-    totalOrders: 5,
-    status: "Active",
-    type: "New",
-    joinedDate: "Jan 14, 2025",
-  },
-  {
-    id: "USR-003",
-    name: "Sarah Jenkins",
-    email: "sarah.j@example.com",
-    phone: "+91 76543 21098",
-    walletBalance: "₹3,800",
-    totalOrders: 45,
-    status: "Active",
-    type: "Top Spender",
-    joinedDate: "Mar 5, 2023",
-  },
-  {
-    id: "USR-004",
-    name: "James Doe",
-    email: "james.doe@example.com",
-    phone: "+91 65432 10987",
-    walletBalance: "₹0",
-    totalOrders: 12,
-    status: "Blocked",
-    type: "Regular",
-    joinedDate: "Aug 20, 2024",
-  },
-  {
-    id: "USR-005",
-    name: "Priya Sharma",
-    email: "priya.s@example.com",
-    phone: "+91 54321 09876",
-    walletBalance: "₹750",
-    totalOrders: 18,
-    status: "Active",
-    type: "Regular",
-    joinedDate: "Nov 8, 2024",
-  },
-];
+const users = USERS;
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -129,11 +75,14 @@ const getTypeColor = (type: string) => {
 };
 
 export default function UsersPage() {
+  const router = useRouter();
   const [userList, setUserList] = useState(users);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<(typeof users)[0] | null>(
+  const [isWalletOpen, setIsWalletOpen] = useState(false);
+  const [isAddressOpen, setIsAddressOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<(typeof USERS)[0] | null>(
     null,
   );
   const [editForm, setEditForm] = useState({
@@ -143,7 +92,7 @@ export default function UsersPage() {
     walletBalance: "",
   });
 
-  const handleEditClick = (user: (typeof users)[0]) => {
+  const handleEditClick = (user: (typeof USERS)[0]) => {
     setSelectedUser(user);
     setEditForm({
       name: user.name,
@@ -152,6 +101,33 @@ export default function UsersPage() {
       walletBalance: user.walletBalance,
     });
     setIsEditOpen(true);
+  };
+
+  const handleManageWallet = (user: (typeof USERS)[0]) => {
+    setSelectedUser(user);
+    setIsWalletOpen(true);
+  };
+
+  const handleViewAddresses = (user: (typeof USERS)[0]) => {
+    setSelectedUser(user);
+    setIsAddressOpen(true);
+  };
+
+  const handleBlockUser = (user: (typeof USERS)[0]) => {
+    setUserList((prev) =>
+      prev.map((u) =>
+        u.id === user.id
+          ? {
+              ...u,
+              status: u.status === "Blocked" ? "Active" : "Blocked",
+            }
+          : u,
+      ),
+    );
+  };
+
+  const handleViewDetails = (user: (typeof USERS)[0]) => {
+    router.push(`/admin/users/${user.id}`);
   };
 
   const handleSaveEdit = () => {
@@ -273,7 +249,7 @@ export default function UsersPage() {
                     <div>
                       <p className="font-semibold text-black">{user.name}</p>
                       <p className="text-xs text-slate-500">
-                        Joined {user.joinedDate}
+                        Joined {user.joinDate}
                       </p>
                     </div>
                   </div>
@@ -294,7 +270,7 @@ export default function UsersPage() {
                   {user.walletBalance}
                 </TableCell>
                 <TableCell className="font-medium">
-                  {user.totalOrders}
+                  24 {/* Mocked total orders */}
                 </TableCell>
                 <TableCell>
                   <Badge
@@ -335,16 +311,28 @@ export default function UsersPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem
+                          className="gap-2"
+                          onClick={() => handleViewDetails(user)}
+                        >
                           <Eye className="h-4 w-4" /> View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem
+                          className="gap-2"
+                          onClick={() => handleManageWallet(user)}
+                        >
                           <Wallet className="h-4 w-4" /> Manage Wallet
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem
+                          className="gap-2"
+                          onClick={() => handleViewAddresses(user)}
+                        >
                           <MapPin className="h-4 w-4" /> View Addresses
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 text-red-600">
+                        <DropdownMenuItem
+                          className="gap-2 text-red-600"
+                          onClick={() => handleBlockUser(user)}
+                        >
                           <Ban className="h-4 w-4" />{" "}
                           {user.status === "Blocked" ? "Unblock" : "Block"} User
                         </DropdownMenuItem>
@@ -358,7 +346,7 @@ export default function UsersPage() {
         </Table>
         <div className="flex items-center justify-between p-4 border-t">
           <p className="text-sm text-slate-500">
-            Showing {filteredUsers.length} of {users.length} users
+            Showing {filteredUsers.length} of {USERS.length} users
           </p>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled>
@@ -439,6 +427,105 @@ export default function UsersPage() {
               onClick={handleSaveEdit}
             >
               Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Manage Wallet Dialog */}
+      <Dialog open={isWalletOpen} onOpenChange={setIsWalletOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Manage Wallet</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <div className="space-y-4 py-4">
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border">
+                <div>
+                  <p className="text-sm text-slate-500">Current Balance</p>
+                  <p className="text-2xl font-bold text-[#3E8940]">
+                    {selectedUser.walletBalance}
+                  </p>
+                </div>
+                <Wallet className="h-8 w-8 text-slate-300" />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Add/Deduct Amount</label>
+                <div className="flex gap-2">
+                  <Select defaultValue="add">
+                    <SelectTrigger className="w-[100px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="add">Add</SelectItem>
+                      <SelectItem value="deduct">Deduct</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="number"
+                    placeholder="Enter amount"
+                    className="flex-1"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Reason (Optional)</label>
+                <Input placeholder="e.g. Refund, Bonus, Adjustment" />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsWalletOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#3E8940] hover:bg-[#3E8940]/90"
+              onClick={() => setIsWalletOpen(false)}
+            >
+              Update Balance
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Addresses Dialog */}
+      <Dialog open={isAddressOpen} onOpenChange={setIsAddressOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Saved Addresses</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="flex items-start gap-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                <div className="mt-1 h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-sm">Home</p>
+                    {i === 1 && (
+                      <Badge variant="secondary" className="text-[10px] h-5">
+                        Default
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-sm text-slate-600 mt-1">
+                    123, Green Park Avenue, Near Central Mall,
+                    <br />
+                    Bangalore, Karnataka - 560001
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddressOpen(false)}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

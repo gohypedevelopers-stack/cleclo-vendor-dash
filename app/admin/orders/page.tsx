@@ -1,6 +1,8 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Search,
   Filter,
@@ -8,10 +10,13 @@ import {
   Eye,
   RefreshCcw,
   AlertTriangle,
+  ArrowRight,
+  Star,
   CheckCircle,
   Clock,
   Truck,
   Package,
+  Ban,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,87 +44,22 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 
-const orders = [
-  {
-    id: "ORD-8291",
-    customer: "Alice Freeman",
-    customerPhone: "+91 98765 43210",
-    vendor: "Clean Express",
-    items: "5kg Wash & Fold",
-    status: "Processing",
-    amount: "₹450",
-    createdAt: "Jan 16, 2:30 PM",
-    dueDate: "Today, 5:00 PM",
-  },
-  {
-    id: "ORD-8292",
-    customer: "Mark Wilson",
-    customerPhone: "+91 87654 32109",
-    vendor: "Sparkle Wash",
-    items: "2 Suits Dry Clean",
-    status: "Pending",
-    amount: "₹280",
-    createdAt: "Jan 16, 2:15 PM",
-    dueDate: "Tomorrow, 10:00 AM",
-  },
-  {
-    id: "ORD-8293",
-    customer: "Sarah Jenkins",
-    customerPhone: "+91 76543 21098",
-    vendor: "Fresh Laundry",
-    items: "10kg Mixed Load",
-    status: "Delivered",
-    amount: "₹620",
-    createdAt: "Jan 15, 11:00 AM",
-    dueDate: "Jan 16, 10:00 AM",
-  },
-  {
-    id: "ORD-8294",
-    customer: "James Doe",
-    customerPhone: "+91 65432 10987",
-    vendor: "Quick Clean",
-    items: "Wedding Dress Clean",
-    status: "Issue Reported",
-    amount: "₹380",
-    createdAt: "Jan 15, 9:30 AM",
-    dueDate: "Jan 16, 2:00 PM",
-  },
-  {
-    id: "ORD-8295",
-    customer: "Priya Sharma",
-    customerPhone: "+91 54321 09876",
-    vendor: "Clean Express",
-    items: "3 Shirts Iron",
-    status: "Ready for Pickup",
-    amount: "₹150",
-    createdAt: "Jan 15, 8:00 AM",
-    dueDate: "Jan 15, 5:00 PM",
-  },
-  {
-    id: "ORD-8296",
-    customer: "Rahul Verma",
-    customerPhone: "+91 43210 98765",
-    vendor: "Urban Laundry",
-    items: "8kg Wash & Iron",
-    status: "Cancelled",
-    amount: "₹520",
-    createdAt: "Jan 14, 4:00 PM",
-    dueDate: "Jan 15, 4:00 PM",
-  },
-];
+import { ORDERS } from "@/lib/ordersData";
 
 const getStatusColor = (status: string) => {
   switch (status) {
     case "Processing":
-      return "bg-yellow-100 text-yellow-700";
-    case "Pending":
+      return "bg-purple-100 text-purple-700";
+    case "Not Scheduled":
+      return "bg-slate-100 text-slate-600";
+    case "Picked Up":
       return "bg-blue-100 text-blue-700";
+    case "Received by Vendor":
+      return "bg-amber-100 text-amber-700";
     case "Delivered":
       return "bg-green-100 text-green-700";
     case "Issue Reported":
       return "bg-red-100 text-red-700";
-    case "Ready for Pickup":
-      return "bg-purple-100 text-purple-700";
     case "Cancelled":
       return "bg-slate-100 text-slate-600";
     default:
@@ -127,18 +67,33 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const getDeliveryBadgeColor = (type?: string) => {
+  switch (type) {
+    case "Express 24h":
+      return "bg-red-100 text-red-700 border-red-200";
+    case "Express 48h":
+      return "bg-orange-100 text-orange-700 border-orange-200";
+    default:
+      return "bg-blue-50 text-blue-700 border-blue-200";
+  }
+};
+
 const getStatusIcon = (status: string) => {
   switch (status) {
     case "Processing":
       return <Clock className="h-3.5 w-3.5" />;
-    case "Pending":
+    case "Not Scheduled":
+      return <Clock className="h-3.5 w-3.5" />;
+    case "Picked Up":
+      return <Truck className="h-3.5 w-3.5" />;
+    case "Received by Vendor":
       return <Package className="h-3.5 w-3.5" />;
     case "Delivered":
       return <CheckCircle className="h-3.5 w-3.5" />;
     case "Issue Reported":
       return <AlertTriangle className="h-3.5 w-3.5" />;
-    case "Ready for Pickup":
-      return <Truck className="h-3.5 w-3.5" />;
+    case "Cancelled":
+      return <Ban className="h-3.5 w-3.5" />;
     default:
       return null;
   }
@@ -153,27 +108,24 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-// ... existing imports
-
 export default function OrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [orderList, setOrderList] = useState(orders);
+  const [orderList, setOrderList] = useState(ORDERS);
+  const router = useRouter();
 
   // Dialog States
-  const [selectedOrder, setSelectedOrder] = useState<(typeof orders)[0] | null>(
+  const [selectedOrder, setSelectedOrder] = useState<(typeof ORDERS)[0] | null>(
     null,
   );
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isReassignOpen, setIsReassignOpen] = useState(false);
   const [newVendor, setNewVendor] = useState("");
 
-  const handleViewDetails = (order: (typeof orders)[0]) => {
-    setSelectedOrder(order);
-    setIsDetailsOpen(true);
+  const handleViewDetails = (order: (typeof ORDERS)[0]) => {
+    router.push(`/admin/orders/${order.id}`);
   };
 
-  const handleReassignClick = (order: (typeof orders)[0]) => {
+  const handleReassignClick = (order: (typeof ORDERS)[0]) => {
     setSelectedOrder(order);
     setNewVendor(""); // Reset
     setIsReassignOpen(true);
@@ -224,29 +176,34 @@ export default function OrdersPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-6">
         {[
           { label: "Total", value: orderList.length, color: "text-slate-700" },
           {
-            label: "Pending",
-            value: orderList.filter((o) => o.status === "Pending").length,
-            color: "text-blue-600",
+            label: "Not Scheduled",
+            value: orderList.filter((o) => o.status === "Not Scheduled").length,
+            color: "text-slate-600",
           },
           {
             label: "Processing",
             value: orderList.filter((o) => o.status === "Processing").length,
-            color: "text-yellow-600",
+            color: "text-purple-600",
+          },
+          {
+            label: "Picked Up",
+            value: orderList.filter((o) => o.status === "Picked Up").length,
+            color: "text-blue-600",
+          },
+          {
+            label: "Received",
+            value: orderList.filter((o) => o.status === "Received by Vendor")
+              .length,
+            color: "text-amber-600",
           },
           {
             label: "Delivered",
             value: orderList.filter((o) => o.status === "Delivered").length,
             color: "text-green-600",
-          },
-          {
-            label: "Issues",
-            value: orderList.filter((o) => o.status === "Issue Reported")
-              .length,
-            color: "text-red-600",
           },
         ].map((stat) => (
           <div
@@ -278,9 +235,12 @@ export default function OrdersPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="not-scheduled">Not Scheduled</SelectItem>
               <SelectItem value="processing">Processing</SelectItem>
-              <SelectItem value="ready-for-pickup">Ready for Pickup</SelectItem>
+              <SelectItem value="picked-up">Picked Up</SelectItem>
+              <SelectItem value="received-by-vendor">
+                Received by Vendor
+              </SelectItem>
               <SelectItem value="delivered">Delivered</SelectItem>
               <SelectItem value="issue-reported">Issue Reported</SelectItem>
               <SelectItem value="cancelled">Cancelled</SelectItem>
@@ -295,25 +255,28 @@ export default function OrdersPage() {
           <TableHeader>
             <TableRow className="hover:bg-[#fbfbfb] border-none bg-[#fbfbfb]">
               <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4 pl-6">
-                Order ID
+                Date
               </TableHead>
               <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
-                Customer
+                Rating
               </TableHead>
               <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
-                Vendor
+                Pickup Person
+              </TableHead>
+              <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
+                Delivery Person
+              </TableHead>
+              <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
+                Message
+              </TableHead>
+              <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
+                Speed
               </TableHead>
               <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
                 Items
               </TableHead>
               <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
                 Status
-              </TableHead>
-              <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
-                Due Date
-              </TableHead>
-              <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4 text-right">
-                Amount
               </TableHead>
               <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4 text-right pr-6">
                 Actions
@@ -323,171 +286,135 @@ export default function OrdersPage() {
           <TableBody>
             {filteredOrders.map((order) => (
               <TableRow key={order.id} className="hover:bg-slate-50">
-                <TableCell className="font-bold text-black py-4 pl-6">
-                  #{order.id}
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <p className="font-medium">{order.customer}</p>
-                    <p className="text-xs text-slate-500">
-                      {order.customerPhone}
+                <TableCell className="py-4 pl-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+                      {order.status === "Delivered" ? (
+                        <Package className="h-5 w-5 text-purple-600" />
+                      ) : (
+                        <Truck className="h-5 w-5 text-purple-600" />
+                      )}
+                    </div>
+                    <p className="font-bold text-black whitespace-nowrap">
+                      {order.dueDate.split(",")[0]}
                     </p>
                   </div>
                 </TableCell>
-                <TableCell className="text-slate-600">{order.vendor}</TableCell>
-                <TableCell>{order.items}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5 text-amber-500 text-sm font-bold">
+                      {order.rating}
+                      <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                    </div>
+                    <p className="font-bold text-slate-900 text-sm">
+                      {order.customer}
+                    </p>
+                    <p className="text-[10px] text-slate-500 leading-tight">
+                      {order.customerPhone}
+                    </p>
+                    <p className="text-[10px] text-purple-600 font-bold uppercase mt-1">
+                      {order.vendor}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">#{order.id}</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {(order.pickupPerson && order.pickupPerson !== "Pending") ||
+                  (order.deliveryPerson &&
+                    order.deliveryPerson !== "Pending") ? (
+                    <p className="text-sm font-bold text-slate-900">
+                      {order.pickupPerson && order.pickupPerson !== "Pending"
+                        ? order.pickupPerson
+                        : order.deliveryPerson}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-red-500 italic font-medium">
+                      Not Assigned
+                    </p>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {order.deliveryPerson === "Pending" ? (
+                    <p className="text-sm text-red-500 italic font-medium">
+                      Not Assigned
+                    </p>
+                  ) : (
+                    <p className="text-sm font-bold text-slate-900">
+                      {order.deliveryPerson}
+                    </p>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <p className="text-sm text-slate-500 italic truncate max-w-[150px]">
+                    {order.note || "-"}
+                  </p>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    className={cn(
+                      "border font-semibold px-2.5 py-0.5 whitespace-nowrap",
+                      getDeliveryBadgeColor(order.deliveryType),
+                    )}
+                  >
+                    {order.deliveryType || "Standard"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-[#f8f9fa] border border-slate-200 shadow-sm">
+                    <span className="text-sm font-bold text-slate-700">
+                      {order.itemCount}
+                    </span>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <Badge
                     className={`${getStatusColor(
                       order.status,
-                    )} border-none font-medium gap-1.5`}
+                    )} border-none font-medium gap-1.5 px-3 py-1 rounded-full whitespace-nowrap`}
                   >
                     {getStatusIcon(order.status)}
                     {order.status}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-slate-600">
-                  {order.dueDate}
-                </TableCell>
-                <TableCell className="text-right font-bold">
-                  {order.amount}
-                </TableCell>
                 <TableCell className="text-right pr-6">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        className="gap-2"
-                        onClick={() => handleViewDetails(order)}
-                      >
-                        <Eye className="h-4 w-4" /> View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="gap-2"
-                        onClick={() => handleReassignClick(order)}
-                      >
-                        <RefreshCcw className="h-4 w-4" /> Reassign Vendor
-                      </DropdownMenuItem>
-                      {order.status === "Issue Reported" && (
-                        <DropdownMenuItem className="gap-2 text-amber-600">
-                          <AlertTriangle className="h-4 w-4" /> View Issue
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Link href={`/admin/orders/${order.id}`}>
+                    <Button
+                      size="sm"
+                      className="h-8 px-4 bg-[#3E8940] hover:bg-[#3E8940]/90 text-xs font-bold gap-1.5"
+                    >
+                      View
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
         {/* Pagination - kept static for now */}
-        <div className="flex items-center justify-between p-4 border-t">
+        <div className="flex items-center justify-between p-4 border-t bg-white rounded-b-xl">
           <p className="text-sm text-slate-500">
-            Showing {filteredOrders.length} of {orders.length} orders
+            Showing {filteredOrders.length} of {ORDERS.length} orders
           </p>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 h-9 px-4"
+              disabled
+            >
               Previous
             </Button>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="default"
+              size="sm"
+              className="bg-slate-900 hover:bg-slate-800 text-white shadow-sm h-9 px-6 font-medium"
+            >
               Next
             </Button>
           </div>
         </div>
       </div>
-
-      {/* Order Details Dialog */}
-      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              Order Details{" "}
-              <span className="text-slate-500 ml-2">#{selectedOrder?.id}</span>
-            </DialogTitle>
-          </DialogHeader>
-
-          {selectedOrder && (
-            <div className="space-y-4 py-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <Label className="text-xs text-slate-500 uppercase">
-                    Customer
-                  </Label>
-                  <p className="font-medium text-sm">
-                    {selectedOrder.customer}
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    {selectedOrder.customerPhone}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-slate-500 uppercase">
-                    Vendor
-                  </Label>
-                  <p className="font-medium text-sm">{selectedOrder.vendor}</p>
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <Label className="text-xs text-slate-500 uppercase">
-                  Items
-                </Label>
-                <div className="p-3 bg-slate-50 rounded-md text-sm border">
-                  {selectedOrder.items}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <Label className="text-xs text-slate-500 uppercase">
-                    Status
-                  </Label>
-                  <div>
-                    <Badge
-                      className={`${getStatusColor(selectedOrder.status)} border-none mt-1`}
-                    >
-                      {selectedOrder.status}
-                    </Badge>
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-slate-500 uppercase">
-                    Total Amount
-                  </Label>
-                  <p className="font-bold text-lg text-black">
-                    {selectedOrder.amount}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-slate-500 block text-xs uppercase mb-1">
-                    Created At
-                  </span>
-                  {selectedOrder.createdAt}
-                </div>
-                <div>
-                  <span className="text-slate-500 block text-xs uppercase mb-1">
-                    Due Date
-                  </span>
-                  {selectedOrder.dueDate}
-                </div>
-              </div>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Reassign Vendor Dialog */}
       <Dialog open={isReassignOpen} onOpenChange={setIsReassignOpen}>
