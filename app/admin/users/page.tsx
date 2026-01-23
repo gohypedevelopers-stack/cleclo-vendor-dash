@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useMemo } from "react";
 import {
@@ -152,7 +153,7 @@ const getRoleBadge = (role: string) => {
   }
 };
 
-export default function UsersPage() {
+function UsersPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roleParam = searchParams.get("role");
@@ -393,5 +394,19 @@ export default function UsersPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function UsersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      }
+    >
+      <UsersPageContent />
+    </Suspense>
   );
 }
