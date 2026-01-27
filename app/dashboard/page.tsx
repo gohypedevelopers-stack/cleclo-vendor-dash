@@ -48,7 +48,7 @@ export default function DashboardPage() {
           "fixed top-4 left-1/2 z-50 transition-all duration-500 transform -translate-x-1/2",
           showNotification
             ? "opacity-100 scale-100"
-            : "opacity-0 scale-95 pointer-events-none"
+            : "opacity-0 scale-95 pointer-events-none",
         )}
       >
         <div className="bg-white rounded-xl shadow-2xl border border-slate-200 p-4 w-[380px] overflow-hidden">
@@ -158,13 +158,6 @@ export default function DashboardPage() {
           >
             <Download className="h-4 w-4" />
             Export Report
-          </Button>
-          <Button
-            className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80"
-            onClick={() => setShowNewOrder(true)}
-          >
-            <Plus className="h-4 w-4" />
-            Create Order
           </Button>
         </div>
       </div>
