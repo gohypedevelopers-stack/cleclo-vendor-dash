@@ -20,9 +20,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function AdminHeader() {
   const { isCollapsed, toggleSidebar } = useSidebar();
+  const router = useRouter();
 
   return (
     <header className="flex h-16 items-center justify-between border-b bg-white px-6">
@@ -104,7 +107,15 @@ export function AdminHeader() {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500">Logout</DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-500 cursor-pointer"
+              onClick={() => {
+                toast.success("Logged out successfully");
+                router.push("/");
+              }}
+            >
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

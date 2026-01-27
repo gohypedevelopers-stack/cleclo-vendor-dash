@@ -128,21 +128,21 @@ export default function StatsSection() {
                 }}
                 className="relative group"
               >
-                <div className="relative bg-white/10 rounded-2xl p-6 md:p-8 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/15 overflow-hidden">
+                <div className="relative bg-white/10 rounded-xl p-4 md:p-5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/15 overflow-hidden">
                   {/* Gradient glow on hover */}
                   <div
-                    className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl`}
+                    className={`absolute inset-0 bg-linear-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-xl`}
                   />
 
                   {/* Icon */}
                   <div
-                    className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} mb-4 shadow-lg`}
+                    className={`inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br ${stat.gradient} mb-3 shadow-lg`}
                   >
-                    <IconComponent className="w-6 h-6 text-white" />
+                    <IconComponent className="w-5 h-5 text-white" />
                   </div>
 
                   {/* Value */}
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">
+                  <div className="text-2xl md:text-3xl font-bold text-white mb-0.5">
                     <AnimatedCounter
                       value={stat.value}
                       suffix={stat.suffix}
@@ -151,12 +151,12 @@ export default function StatsSection() {
                   </div>
 
                   {/* Label */}
-                  <div className="text-base md:text-lg font-medium text-white/80 mb-1">
+                  <div className="text-sm md:text-base font-medium text-white/80 mb-0.5">
                     {stat.label}
                   </div>
 
                   {/* Description */}
-                  <div className="text-sm text-white/50">
+                  <div className="text-xs text-white/50">
                     {stat.description}
                   </div>
                 </div>
