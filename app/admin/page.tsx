@@ -23,7 +23,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link"; // Keeping Link just in case, though we used router mostly.
 
 // Mock data
 const stats = [
@@ -136,6 +138,18 @@ const getStatusColor = (status: string) => {
 };
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
+
+  const handleGenerateReport = () => {
+    toast.success("Report generation started", {
+      description: "You will receive an email once the report is ready.",
+    });
+  };
+
+  const handleViewAnalytics = () => {
+    router.push("/admin/analytics");
+  };
+
   return (
     <div className="flex flex-col gap-8">
       {/* Header */}
@@ -144,85 +158,92 @@ export default function AdminDashboardPage() {
           <h1 className="text-3xl text-black font-bold tracking-tight">
             Admin Dashboard
           </h1>
-          <p className="text-primary mt-1">
+          <p className="text-[#3E8940] mt-1 font-medium">
             Overview of your platform&apos;s performance
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="gap-2 text-black">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            className="gap-2 text-slate-700 border-slate-200 hover:bg-slate-50"
+            onClick={handleGenerateReport}
+          >
             Generate Report
           </Button>
-          <Button className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/80">
+          <Button
+            className="gap-2 bg-[#3E8940] hover:bg-[#3E8940]/90 text-white shadow-sm"
+            onClick={handleViewAnalytics}
+          >
             View Analytics
           </Button>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <div
             key={stat.title}
-            className="bg-white rounded-xl shadow-sm border p-6"
+            className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition-shadow"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between mb-4">
               <div className={`p-3 rounded-xl ${stat.bgColor}`}>
                 <stat.icon className={`h-6 w-6 ${stat.color}`} />
               </div>
               <Badge
-                variant="outline"
+                variant="secondary"
                 className={`${
                   stat.trend === "up"
-                    ? "text-green-600 bg-green-50"
-                    : "text-red-600 bg-red-50"
-                } border-none`}
+                    ? "text-green-700 bg-green-50"
+                    : "text-red-700 bg-red-50"
+                } font-medium border-none`}
               >
-                {stat.trend === "up" ? (
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 mr-1" />
-                )}
+                {stat.trend === "up" ? "+" : ""}
                 {stat.change}
               </Badge>
             </div>
-            <div className="mt-4">
-              <h3 className="text-2xl font-bold text-black">{stat.value}</h3>
-              <p className="text-sm text-slate-500 mt-1">{stat.title}</p>
+            <div>
+              <h3 className="text-3xl font-bold text-slate-900 tracking-tight">
+                {stat.value}
+              </h3>
+              <p className="text-sm font-medium text-slate-500 mt-1">
+                {stat.title}
+              </p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3">
         {/* Recent Orders */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-black">Recent Orders</h2>
+            <h2 className="text-lg font-bold text-slate-900">Recent Orders</h2>
             <Button
               variant="ghost"
-              className="text-sm font-bold text-[#3E8940] hover:text-[#3E8940]/80 hover:bg-emerald-50"
-              asChild
+              className="text-sm font-semibold text-[#3E8940] hover:text-[#3E8940]/80 hover:bg-green-50"
+              onClick={() => router.push("/admin/orders")}
             >
-              <Link href="/admin/orders">View All</Link>
+              View All
             </Button>
           </div>
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-[#fbfbfb] border-none bg-[#fbfbfb]">
-                <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
+              <TableRow className="hover:bg-transparent border-b border-slate-100">
+                <TableHead className="text-xs font-bold uppercase text-[#3E8940] py-3">
                   Order ID
                 </TableHead>
-                <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
+                <TableHead className="text-xs font-bold uppercase text-[#3E8940] py-3">
                   Customer
                 </TableHead>
-                <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
+                <TableHead className="text-xs font-bold uppercase text-[#3E8940] py-3">
                   Vendor
                 </TableHead>
-                <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4">
+                <TableHead className="text-xs font-bold uppercase text-[#3E8940] py-3">
                   Status
                 </TableHead>
-                <TableHead className="text-xs font-bold uppercase text-[#4FA851] py-4 text-right">
+                <TableHead className="text-xs font-bold uppercase text-[#3E8940] py-3 text-right">
                   Amount
                 </TableHead>
               </TableRow>
@@ -231,25 +252,28 @@ export default function AdminDashboardPage() {
               {recentOrders.map((order) => (
                 <TableRow
                   key={order.id}
-                  className="hover:bg-slate-50 cursor-pointer"
+                  className="hover:bg-slate-50/80 border-b border-slate-50 last:border-0 cursor-pointer transition-colors"
+                  onClick={() => router.push(`/admin/orders/${order.id}`)}
                 >
-                  <TableCell className="font-semibold text-black">
+                  <TableCell className="font-bold text-slate-900">
                     #{order.id}
                   </TableCell>
-                  <TableCell>{order.customer}</TableCell>
+                  <TableCell className="font-medium text-slate-700">
+                    {order.customer}
+                  </TableCell>
                   <TableCell className="text-slate-600">
                     {order.vendor}
                   </TableCell>
                   <TableCell>
                     <Badge
                       className={`${getStatusColor(
-                        order.status
-                      )} border-none font-medium`}
+                        order.status,
+                      )} border-none font-semibold px-2.5 py-0.5 rounded-full`}
                     >
                       {order.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right font-bold">
+                  <TableCell className="text-right font-bold text-slate-900">
                     {order.amount}
                   </TableCell>
                 </TableRow>
@@ -261,33 +285,34 @@ export default function AdminDashboardPage() {
         {/* Right Sidebar */}
         <div className="space-y-6">
           {/* Pending Vendor Approvals */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-black flex items-center gap-2">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2">
                 <Clock className="h-4 w-4 text-amber-500" />
                 Pending Approvals
               </h3>
-              <Badge className="bg-amber-100 text-amber-700 border-none">
+              <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none font-bold px-2 rounded-full">
                 {pendingVendors.length}
               </Badge>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {pendingVendors.map((vendor, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                  className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 transition-all hover:shadow-sm"
                 >
                   <div>
-                    <p className="font-medium text-sm text-black">
+                    <p className="font-bold text-sm text-slate-900">
                       {vendor.name}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-500 mt-1 font-medium">
                       {vendor.location} • {vendor.applied}
                     </p>
                   </div>
                   <Button
                     size="sm"
-                    className="bg-[#3E8940] hover:bg-[#3E8940]/90 h-7 text-xs"
+                    className="bg-[#3E8940] hover:bg-[#3E8940]/90 h-8 text-xs font-semibold shadow-sm px-4"
+                    onClick={() => router.push(`/admin/vendors/review/${idx}`)}
                   >
                     Review
                   </Button>
@@ -296,21 +321,21 @@ export default function AdminDashboardPage() {
             </div>
             <Button
               variant="ghost"
-              className="w-full mt-3 text-sm text-[#3E8940]"
-              asChild
+              className="w-full mt-4 text-sm font-semibold text-[#3E8940] hover:text-[#3E8940]/90 hover:bg-green-50"
+              onClick={() => router.push("/admin/vendors")}
             >
-              <Link href="/admin/vendors">View All Vendors</Link>
+              View All Vendors
             </Button>
           </div>
 
           {/* Issue Alerts */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-black flex items-center gap-2">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-slate-900 flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-red-500" />
                 Issue Alerts
               </h3>
-              <Badge className="bg-red-100 text-red-700 border-none">
+              <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none font-bold px-2 rounded-full">
                 {issueAlerts.length}
               </Badge>
             </div>
@@ -318,16 +343,21 @@ export default function AdminDashboardPage() {
               {issueAlerts.map((issue, idx) => (
                 <div
                   key={idx}
-                  className="p-3 bg-red-50 rounded-lg border border-red-100"
+                  className="p-4 bg-red-50/50 rounded-xl border border-red-100/50 hover:bg-red-50 transition-colors cursor-pointer group"
+                  onClick={() => router.push(`/admin/support/${issue.orderId}`)}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-sm text-red-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-bold text-xs text-red-700 bg-red-100 px-2 py-0.5 rounded-md group-hover:bg-red-200 transition-colors">
                       #{issue.orderId}
                     </span>
-                    <span className="text-xs text-red-500">{issue.time}</span>
+                    <span className="text-[10px] font-medium text-red-500">
+                      {issue.time}
+                    </span>
                   </div>
-                  <p className="text-sm text-red-600">{issue.type}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-bold text-red-700 mb-0.5">
+                    {issue.type}
+                  </p>
+                  <p className="text-xs font-medium text-slate-500">
                     Vendor: {issue.vendor}
                   </p>
                 </div>
@@ -339,4 +369,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
