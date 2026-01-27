@@ -2,14 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import {
-  Shirt,
-  Droplets,
-  Wind,
-  Sparkles,
-  Clock,
-  CheckCircle,
-} from "lucide-react";
+import { Shirt, Droplets, Wind, Sparkles, Clock, Check } from "lucide-react";
 
 export default function Services() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -18,42 +11,42 @@ export default function Services() {
     {
       icon: Shirt,
       title: "Dry Clean",
-      description:
-        "Premium dry cleaning service for delicate garments and formal wear",
+      description: "Premium dry cleaning for delicate garments and formal wear",
       features: ["Stain removal", "Gentle on fabrics", "Premium finish"],
       gradient: "from-violet-500 to-purple-600",
-      bgGradient: "from-violet-500/20 to-purple-600/20",
-      image: "👔",
+      lightGradient: "from-violet-100 to-purple-100",
+      accentColor: "text-violet-500",
+      dotColor: "bg-violet-500",
     },
     {
       icon: Droplets,
       title: "Wash & Fold",
-      description:
-        "Professional washing with care for all fabric types and daily wear",
+      description: "Professional washing with care for all fabric types",
       features: ["Color separation", "Quality detergent", "Fresh scent"],
-      gradient: "from-blue-500 to-cyan-500",
-      bgGradient: "from-blue-500/20 to-cyan-500/20",
-      image: "👕",
+      gradient: "from-cyan-500 to-blue-500",
+      lightGradient: "from-cyan-100 to-blue-100",
+      accentColor: "text-cyan-500",
+      dotColor: "bg-cyan-500",
     },
     {
       icon: Wind,
       title: "Steam Iron",
-      description:
-        "Expert pressing and steam ironing service for crisp, wrinkle-free clothes",
+      description: "Expert pressing for crisp, wrinkle-free clothes",
       features: ["Crisp finish", "No damage", "Quick service"],
-      gradient: "from-orange-500 to-amber-500",
-      bgGradient: "from-orange-500/20 to-amber-500/20",
-      image: "👗",
+      gradient: "from-orange-400 to-amber-500",
+      lightGradient: "from-orange-100 to-amber-100",
+      accentColor: "text-orange-500",
+      dotColor: "bg-orange-500",
     },
     {
       icon: Sparkles,
       title: "Premium Care",
-      description:
-        "Specialized care for luxury fabrics, wedding attire, and designer wear",
+      description: "Specialized care for luxury fabrics and designer wear",
       features: ["Expert handling", "Insurance cover", "White glove"],
-      gradient: "from-rose-500 to-pink-500",
-      bgGradient: "from-rose-500/20 to-pink-500/20",
-      image: "👘",
+      gradient: "from-rose-400 to-pink-500",
+      lightGradient: "from-rose-100 to-pink-100",
+      accentColor: "text-rose-500",
+      dotColor: "bg-rose-500",
     },
   ];
 
@@ -61,50 +54,44 @@ export default function Services() {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
+    <section className="py-16 md:py-24 bg-gradient-to-b from-slate-50/50 to-white relative overflow-hidden">
+      {/* Subtle background decoration */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
       </div>
 
       <div
         ref={containerRef}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         {/* Section header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
           <motion.span
-            className="inline-block px-4 py-2 rounded-full bg-secondary/20 text-secondary text-sm font-medium mb-4"
+            className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={
               isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
             }
             transition={{ delay: 0.2 }}
           >
-            Services
+            Our Services
           </motion.span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
             Services You Can <span className="gradient-text">Offer</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive service options to meet diverse customer needs and
-            maximize your revenue
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Comprehensive options to meet customer needs and maximize revenue
           </p>
         </motion.div>
 
         {/* Services grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
           {services.map((service, index) => {
             const IconComponent = service.icon;
             const isHovered = hoveredIndex === index;
@@ -112,10 +99,10 @@ export default function Services() {
             return (
               <motion.div
                 key={index}
-                className="group relative"
-                initial={{ opacity: 0, y: 50 }}
+                className="group"
+                initial={{ opacity: 0, y: 40 }}
                 animate={
-                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }
                 }
                 transition={{
                   duration: 0.5,
@@ -126,79 +113,85 @@ export default function Services() {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <motion.div
-                  className="h-full bg-card rounded-2xl overflow-hidden border border-border transition-all duration-500 hover:border-transparent relative"
-                  whileHover={{ y: -8 }}
-                  transition={{ duration: 0.3 }}
+                  className="h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-slate-200"
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  {/* Gradient border on hover */}
-                  <motion.div
-                    className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                    style={{ padding: "2px" }}
+                  {/* Icon section with soft gradient background */}
+                  <div
+                    className={`relative h-32 flex items-center justify-center bg-gradient-to-br ${service.lightGradient} overflow-hidden`}
                   >
-                    <div className="absolute inset-[2px] bg-card rounded-2xl" />
-                  </motion.div>
+                    {/* Floating accent shapes */}
+                    <motion.div
+                      className={`absolute top-3 right-3 w-16 h-16 rounded-full bg-gradient-to-br ${service.gradient} opacity-10 blur-xl`}
+                      animate={
+                        isHovered
+                          ? { scale: 1.5, opacity: 0.2 }
+                          : { scale: 1, opacity: 0.1 }
+                      }
+                      transition={{ duration: 0.4 }}
+                    />
+                    <motion.div
+                      className={`absolute bottom-3 left-3 w-12 h-12 rounded-full bg-gradient-to-br ${service.gradient} opacity-10 blur-lg`}
+                      animate={
+                        isHovered
+                          ? { scale: 1.3, opacity: 0.15 }
+                          : { scale: 1, opacity: 0.1 }
+                      }
+                      transition={{ duration: 0.4, delay: 0.1 }}
+                    />
 
-                  {/* Card content */}
-                  <div className="relative z-10 h-full flex flex-col">
-                    {/* Icon section with gradient background */}
-                    <div
-                      className={`relative h-40 flex items-center justify-center bg-gradient-to-br ${service.bgGradient} overflow-hidden`}
+                    {/* Icon container */}
+                    <motion.div
+                      className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg`}
+                      animate={
+                        isHovered
+                          ? { scale: 1.1, rotate: 3, y: -2 }
+                          : { scale: 1, rotate: 0, y: 0 }
+                      }
+                      transition={{
+                        duration: 0.3,
+                        type: "spring",
+                        stiffness: 300,
+                      }}
                     >
-                      {/* Animated circles */}
-                      <motion.div
-                        className="absolute inset-0"
-                        animate={isHovered ? { scale: 1.2 } : { scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <div
-                          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br ${service.gradient} rounded-full opacity-20 blur-xl`}
-                        />
-                      </motion.div>
+                      <IconComponent className="w-6 h-6 text-white" />
+                    </motion.div>
+                  </div>
 
-                      {/* Icon */}
-                      <motion.div
-                        className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-xl`}
-                        animate={
-                          isHovered
-                            ? { scale: 1.1, rotate: 5 }
-                            : { scale: 1, rotate: 0 }
-                        }
-                        transition={{ duration: 0.3 }}
-                      >
-                        <IconComponent className="w-7 h-7 text-white" />
-                      </motion.div>
-                    </div>
+                  {/* Text content */}
+                  <div className="p-5">
+                    <h3
+                      className={`text-lg font-bold text-slate-800 mb-1.5 group-hover:${service.accentColor} transition-colors`}
+                    >
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-slate-500 leading-relaxed mb-4">
+                      {service.description}
+                    </p>
 
-                    {/* Text content */}
-                    <div className="p-6 flex-1 flex flex-col">
-                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
-                        {service.title}
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed mb-4 flex-1">
-                        {service.description}
-                      </p>
-
-                      {/* Features */}
-                      <div className="space-y-2">
-                        {service.features.map((feature, i) => (
-                          <motion.div
-                            key={i}
-                            className="flex items-center gap-2 text-sm text-muted-foreground"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={
-                              isHovered
-                                ? { opacity: 1, x: 0 }
-                                : { opacity: 0.7, x: 0 }
-                            }
-                            transition={{ delay: i * 0.05 }}
-                          >
-                            <CheckCircle
-                              className={`w-4 h-4 bg-gradient-to-br ${service.gradient} rounded-full text-white p-0.5`}
-                            />
+                    {/* Features with colored dots */}
+                    <div className="space-y-2">
+                      {service.features.map((feature, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex items-center gap-2.5"
+                          initial={{ opacity: 0.6 }}
+                          animate={
+                            isHovered
+                              ? { opacity: 1, x: 2 }
+                              : { opacity: 0.6, x: 0 }
+                          }
+                          transition={{ delay: i * 0.03, duration: 0.2 }}
+                        >
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${service.dotColor}`}
+                          />
+                          <span className="text-xs text-slate-600">
                             {feature}
-                          </motion.div>
-                        ))}
-                      </div>
+                          </span>
+                        </motion.div>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
@@ -207,17 +200,19 @@ export default function Services() {
           })}
         </div>
 
-        {/* Bottom CTA */}
+        {/* Bottom info badge */}
         <motion.div
-          className="text-center mt-16"
+          className="text-center mt-12"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ delay: 0.6 }}
         >
-          <p className="text-muted-foreground mb-4">
-            <Clock className="inline-block w-5 h-5 mr-2 text-primary" />
-            All services available with Express Delivery option
-          </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
+            <Clock className="w-4 h-4 text-primary" />
+            <span className="text-sm text-muted-foreground">
+              All services available with Express Delivery option
+            </span>
+          </div>
         </motion.div>
       </div>
     </section>

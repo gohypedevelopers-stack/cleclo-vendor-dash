@@ -122,6 +122,34 @@ const managementItems: NavItem[] = [
     title: "Rider",
     href: "/admin/rider",
     icon: Bike,
+    subItems: [
+      {
+        title: "All",
+        href: "/admin/rider",
+        icon: Users,
+      },
+      {
+        title: "Riders",
+        href: "/admin/rider/all",
+        icon: Users,
+      },
+      {
+        title: "New verification",
+        href: "/admin/rider/verification",
+        icon: Store,
+      },
+
+      {
+        title: "Rider analytics",
+        href: "/admin/rider/analytics",
+        icon: Bike,
+      },
+      {
+        title: "Support",
+        href: "/admin/rider/support",
+        icon: Bike,
+      },
+    ],
   },
   {
     title: "Orders",
@@ -276,9 +304,12 @@ export function AdminSidebar() {
                     if (subItem.href === "/admin/users") {
                       isSubActive =
                         pathname === subItem.href && !searchParams.get("role");
-                    } else if (subItem.href === "/admin/vendor") {
-                      // Fix: "All" (/admin/vendor) should specificially match exact path
-                      // to avoid highlighting when on /admin/vendor/support etc.
+                    } else if (
+                      subItem.href === "/admin/vendor" ||
+                      subItem.href === "/admin/rider"
+                    ) {
+                      // Fix: "All" should specifically match exact path
+                      // to avoid highlighting when on sub-routes
                       isSubActive = pathname === subItem.href;
                     } else {
                       isSubActive =
