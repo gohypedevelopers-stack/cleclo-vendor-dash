@@ -86,7 +86,7 @@ export default function ServicesPage() {
 
   const toggleAvailability = (id: number) => {
     setServices((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, available: !s.available } : s))
+      prev.map((s) => (s.id === id ? { ...s, available: !s.available } : s)),
     );
   };
 
@@ -154,7 +154,7 @@ export default function ServicesPage() {
                 </div>
                 <Badge
                   className={`${getCategoryColor(
-                    service.category
+                    service.category,
                   )} border-none text-xs`}
                 >
                   {service.category}
@@ -171,13 +171,7 @@ export default function ServicesPage() {
             </h3>
             <p className="text-sm text-slate-500 mb-3">{service.description}</p>
 
-            <div className="flex items-center justify-between pt-3 border-t">
-              <div>
-                <p className="text-xs text-slate-400 uppercase font-medium">
-                  Base Price
-                </p>
-                <p className="font-bold text-[#3E8940]">{service.basePrice}</p>
-              </div>
+            <div className="flex items-center justify-end pt-3 border-t">
               <Badge
                 className={`${
                   service.available
