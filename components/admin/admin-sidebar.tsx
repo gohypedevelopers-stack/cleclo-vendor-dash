@@ -112,6 +112,11 @@ const managementItems: NavItem[] = [
         icon: Bike,
       },
       {
+        title: "Payments",
+        href: "/admin/vendor/payments",
+        icon: CreditCard,
+      },
+      {
         title: "Support",
         href: "/admin/vendor/support",
         icon: Bike,
@@ -143,6 +148,11 @@ const managementItems: NavItem[] = [
         title: "Rider analytics",
         href: "/admin/rider/analytics",
         icon: Bike,
+      },
+      {
+        title: "Payments",
+        href: "/admin/rider/payments",
+        icon: CreditCard,
       },
       {
         title: "Support",
