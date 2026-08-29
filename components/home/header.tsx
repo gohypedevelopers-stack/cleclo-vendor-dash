@@ -39,11 +39,7 @@ export default function Header() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className={`flex justify-between items-center rounded-2xl px-6 transition-all duration-500 ${
-              scrolled
-                ? "bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border border-white/50 py-3"
-                : "bg-transparent py-2"
-            }`}
+            className={`flex justify-between items-center rounded-2xl px-6 transition-all duration-500 bg-[var(--kraft)]/90 backdrop-blur-xl shadow-md border border-[var(--kraft-line)] py-3`}
             layout
           >
             {/* Logo */}
@@ -53,11 +49,11 @@ export default function Header() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Image
-                  src="/logo.svg"
+                  src="/logo.png"
                   alt="Cleclo Logo"
-                  width={120}
-                  height={40}
-                  className="h-10 w-auto"
+                  width={680}
+                  height={171}
+                  className="h-9 w-auto"
                   priority
                 />
               </motion.div>
@@ -69,11 +65,7 @@ export default function Header() {
                 <motion.a
                   key={link.label}
                   href={link.href}
-                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    scrolled
-                      ? "text-foreground hover:text-primary"
-                      : "text-white/90 hover:text-white"
-                  }`}
+                  className="relative px-4 py-2 rounded-lg text-sm font-medium transition-colors text-[var(--pine)] hover:text-[var(--stamp)] font-sans"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
@@ -81,9 +73,7 @@ export default function Header() {
                 >
                   {link.label}
                   <motion.span
-                    className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${
-                      scrolled ? "bg-primary" : "bg-white"
-                    }`}
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--stamp)]"
                     initial={{ scale: 0 }}
                     whileHover={{ scale: 1 }}
                   />
@@ -96,21 +86,13 @@ export default function Header() {
               <Button
                 asChild
                 variant="ghost"
-                className={`transition-colors ${
-                  scrolled
-                    ? "text-foreground hover:text-primary hover:bg-primary/10"
-                    : "text-white/90 hover:text-white hover:bg-white/10"
-                }`}
+                className="btn btn-ghost text-sm font-sans"
               >
                 <Link href="/login">Login</Link>
               </Button>
               <Button
                 asChild
-                className={`transition-all duration-300 ${
-                  scrolled
-                    ? "bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
-                    : "bg-white text-[#0A1628] hover:bg-white/90"
-                }`}
+                className="btn btn-primary text-xs font-semibold px-4 py-2"
               >
                 <Link href="/signup">Become a Cleclo Partner Vendor</Link>
               </Button>

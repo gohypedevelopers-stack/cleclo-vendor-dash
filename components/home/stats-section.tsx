@@ -54,7 +54,6 @@ export default function StatsSection() {
       prefix: "₹",
       label: "Revenue Processed",
       description: "Monthly Transactions",
-      gradient: "from-green-500 to-emerald-400",
     },
     {
       icon: Users,
@@ -62,7 +61,6 @@ export default function StatsSection() {
       suffix: "+",
       label: "Active Vendors",
       description: "Transacting Partners",
-      gradient: "from-blue-500 to-cyan-400",
     },
     {
       icon: ThumbsUp,
@@ -70,34 +68,20 @@ export default function StatsSection() {
       suffix: "%",
       label: "Partner Satisfaction Score",
       description: "Happy Vendors",
-      gradient: "from-purple-500 to-pink-400",
     },
-    // {
-    //   icon: MapPin,
-    //   value: 20,
-    //   suffix: "+",
-    //   label: "Cities Covered",
-    //   description: "Pan-India presence",
-    //   gradient: "from-orange-500 to-amber-400",
-    // },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
 
   return (
-    <section className="relative py-16 md:py-20 bg-gradient-to-b from-[#0f1d32] to-background overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[120px]" />
-      </div>
-
+    <section className="section wrap bg-[var(--steam)]">
       <div
         ref={containerRef}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative z-10 max-w-7xl mx-auto"
       >
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
+          className="kpi-grid grid grid-cols-1 md:grid-cols-3 gap-6"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={{
@@ -115,7 +99,7 @@ export default function StatsSection() {
               <motion.div
                 key={index}
                 variants={{
-                  hidden: { opacity: 0, y: 30, scale: 0.9 },
+                  hidden: { opacity: 0, y: 30, scale: 0.95 },
                   visible: {
                     opacity: 1,
                     y: 0,
@@ -126,39 +110,34 @@ export default function StatsSection() {
                     },
                   },
                 }}
-                className="relative group"
+                className="kpi-card"
               >
-                <div className="relative bg-white/10 rounded-xl p-4 md:p-5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/15 overflow-hidden">
-                  {/* Gradient glow on hover */}
-                  <div
-                    className={`absolute inset-0 bg-linear-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-xl`}
+                <span className="hole"></span>
+
+                {/* Icon */}
+                <div
+                  className="w-10 h-10 rounded-lg bg-[var(--pine)] text-[var(--brass-dim)] flex items-center justify-center mb-4"
+                >
+                  <IconComponent className="w-5 h-5" />
+                </div>
+
+                {/* Value */}
+                <div className="num font-mono">
+                  <AnimatedCounter
+                    value={stat.value}
+                    suffix={stat.suffix}
+                    prefix={stat.prefix || ""}
                   />
+                </div>
 
-                  {/* Icon */}
-                  <div
-                    className={`inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br ${stat.gradient} mb-3 shadow-lg`}
-                  >
-                    <IconComponent className="w-5 h-5 text-white" />
-                  </div>
+                {/* Label */}
+                <div className="title font-display">
+                  {stat.label}
+                </div>
 
-                  {/* Value */}
-                  <div className="text-2xl md:text-3xl font-bold text-white mb-0.5">
-                    <AnimatedCounter
-                      value={stat.value}
-                      suffix={stat.suffix}
-                      prefix={stat.prefix || ""}
-                    />
-                  </div>
-
-                  {/* Label */}
-                  <div className="text-sm md:text-base font-medium text-white/80 mb-0.5">
-                    {stat.label}
-                  </div>
-
-                  {/* Description */}
-                  <div className="text-xs text-white/50">
-                    {stat.description}
-                  </div>
+                {/* Description */}
+                <div className="desc font-mono">
+                  {stat.description}
                 </div>
               </motion.div>
             );
@@ -167,7 +146,7 @@ export default function StatsSection() {
 
         {/* Bottom trust badges */}
         <motion.div
-          className="flex flex-wrap items-center justify-center gap-6 md:gap-12 mt-12 pt-8 border-t border-white/10"
+          className="flex flex-wrap items-center justify-center gap-6 md:gap-12 mt-12 pt-8 border-t border-[var(--line)]"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ delay: 0.6, duration: 0.5 }}
@@ -180,9 +159,9 @@ export default function StatsSection() {
           ].map((badge, i) => (
             <div
               key={i}
-              className="flex items-center gap-2 text-white/60 text-sm"
+              className="flex items-center gap-2 text-[var(--ink-soft)] text-sm font-medium"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-secondary" />
+              <div className="w-2 h-2 rounded-full bg-[var(--stamp)]" />
               {badge}
             </div>
           ))}

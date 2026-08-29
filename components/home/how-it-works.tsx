@@ -75,39 +75,24 @@ export default function HowItWorks() {
   return (
     <section
       id="how"
-      className="py-12 md:py-20 bg-card relative overflow-hidden"
+      className="section wrap bg-[var(--steam)]"
     >
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-[120px]" />
-      </div>
-
       <div
         ref={containerRef}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative z-10 max-w-7xl mx-auto"
       >
         {/* Section header */}
         <motion.div
-          className="text-center mb-20"
+          className="section-head text-center mx-auto flex flex-col items-center mb-20"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.span
-            className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={
-              isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
-            }
-            transition={{ delay: 0.2 }}
-          >
-            Getting Started
-          </motion.span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-            How It <span className="gradient-text">Works</span>
+          <div className="eyebrow mx-auto">Getting Started</div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display text-[var(--pine)] text-center mb-4 max-w-3xl mx-auto">
+            How It <span className="text-[var(--stamp)]">Works</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="lede max-w-2xl mx-auto text-center text-[var(--ink-soft)]">
             A streamlined process to onboard, operate and scale on Cleclo.
           </p>
         </motion.div>
@@ -115,9 +100,9 @@ export default function HowItWorks() {
         {/* Timeline container */}
         <div className="relative">
           {/* Vertical timeline line - Desktop */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2">
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-[var(--kraft-line)] -translate-x-1/2">
             <motion.div
-              className="absolute top-0 left-0 w-full bg-gradient-to-b from-primary via-secondary to-primary"
+              className="absolute top-0 left-0 w-full bg-[var(--stamp)]"
               style={{ height: lineHeight }}
             />
           </div>
@@ -126,15 +111,15 @@ export default function HowItWorks() {
           <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
             <motion.div
               style={{ opacity: badgeOpacity, scale: badgeScale }}
-              className="bg-background/80 backdrop-blur-md border border-primary/20 shadow-2xl shadow-primary/10 px-6 py-3 rounded-2xl flex items-center gap-4 whitespace-nowrap"
+              className="bg-[var(--white)] border border-[var(--brass)] shadow-xl px-6 py-3 rounded-2xl flex items-center gap-4 whitespace-nowrap"
             >
-              <div className="w-10 h-10 rounded-full bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center shrink-0">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-full bg-[var(--pine)] text-[var(--brass-dim)] flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5" />
               </div>
               <div className="text-sm">
-                <p className="font-bold text-foreground">Cleclo Intelligence</p>
-                <p className="text-muted-foreground">
-                  Handles order routing & notifications automatically.
+                <p className="font-bold text-[var(--pine)] font-display">Cleclo Intelligence</p>
+                <p className="text-[var(--ink-soft)] font-sans">
+                  Handles order routing &amp; notifications automatically.
                 </p>
               </div>
             </motion.div>
@@ -167,40 +152,26 @@ export default function HowItWorks() {
                     className={`w-full md:w-5/12 ${isEven ? "md:pr-12" : "md:pl-12"} text-left`}
                   >
                     <motion.div
-                      className="bg-background rounded-2xl p-8 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 group"
-                      whileHover={{ y: -5 }}
+                      className="bg-[var(--white)] rounded-2xl p-8 border border-[var(--line)] hover:border-[var(--pine)] transition-all duration-300 shadow-sm hover:shadow-md group"
+                      whileHover={{ y: -4 }}
                     >
-                      {/* Mobile Header: Step Number & Icon */}
-                      <div className="md:hidden flex items-center justify-between mb-6">
-                        <div className={`flex items-center gap-2 ${step.color}`}>
-                          <span className="text-xs font-bold uppercase tracking-wider">
-                            Step
-                          </span>
-                          <span className="text-3xl font-bold leading-none">
-                            {step.number}
-                          </span>
+                      {/* Desktop Icon & Mobile Header */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-[var(--pine)] text-[var(--brass-dim)] flex items-center justify-center">
+                          <IconComponent className="w-6 h-6" />
                         </div>
-                        <div
-                          className={`flex items-center justify-center w-14 h-14 rounded-xl bg-linear-to-br ${step.gradient} shadow-lg group-hover:scale-110 transition-transform`}
-                        >
-                          <IconComponent className="w-7 h-7 text-white" />
-                        </div>
-                      </div>
-
-                      {/* Desktop Icon (hidden on mobile) */}
-                      <div
-                        className={`hidden md:inline-flex items-center justify-center w-14 h-14 rounded-xl bg-linear-to-br ${step.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform`}
-                      >
-                        <IconComponent className="w-7 h-7 text-white" />
+                        <span className="text-3xl font-bold font-mono text-[var(--kraft-line)]">
+                          {step.number}
+                        </span>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                      <h3 className="text-xl font-bold font-display text-[var(--pine)] mb-3">
                         {step.title}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-muted-foreground leading-relaxed">
+                      <p className="text-[var(--ink-soft)] leading-relaxed font-sans text-sm">
                         {step.description}
                       </p>
                     </motion.div>
@@ -209,7 +180,7 @@ export default function HowItWorks() {
                   {/* Center circle with number */}
                   <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
                     <motion.div
-                      className={`w-16 h-16 rounded-full bg-gradient-to-br ${step.gradient} flex items-center justify-center shadow-lg`}
+                      className="w-14 h-14 rounded-full bg-[var(--pine)] text-[var(--steam)] border-2 border-[var(--steam)] flex items-center justify-center shadow-md"
                       initial={{ scale: 0 }}
                       animate={isInView ? { scale: 1 } : { scale: 0 }}
                       transition={{
@@ -218,7 +189,7 @@ export default function HowItWorks() {
                         bounce: 0.5,
                       }}
                     >
-                      <span className="text-xl font-bold text-white">
+                      <span className="text-lg font-bold font-mono">
                         {step.number}
                       </span>
                     </motion.div>
@@ -239,12 +210,12 @@ export default function HowItWorks() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ delay: 0.8 }}
         >
-          <p className="text-muted-foreground mb-4 text-lg">
+          <p className="text-[var(--ink-soft)] mb-4 text-lg font-sans">
             Ready to grow your laundry business?
           </p>
           <motion.a
             href="/signup"
-            className="inline-flex items-center gap-2 text-lg text-primary font-semibold hover:gap-4 transition-all"
+            className="btn btn-primary inline-flex items-center gap-2"
             whileHover={{ scale: 1.05 }}
           >
             Become a Vendor

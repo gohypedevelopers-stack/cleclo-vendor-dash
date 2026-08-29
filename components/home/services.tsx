@@ -74,48 +74,31 @@ export default function Services() {
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-slate-50/50 to-white relative overflow-hidden">
-      {/* Subtle background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
-      </div>
-
+    <section
+      id="services"
+      className="section wrap bg-[var(--steam)]"
+    >
       <div
         ref={containerRef}
-        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative z-10 max-w-7xl mx-auto"
       >
         {/* Section header */}
         <motion.div
-          className="text-center mb-12"
+          className="section-head text-center mx-auto flex flex-col items-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.span
-            className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={
-              isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
-            }
-            transition={{ delay: 0.2 }}
-          >
-            Our Services
-          </motion.span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
-            Services You Can <span className="gradient-text">Offer</span>
+          <div className="eyebrow mx-auto">Services &amp; Workflows</div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display text-[var(--pine)] text-center mb-4 max-w-4xl mx-auto">
+            Services &amp; Standardised Processing Categories
           </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Cleclo enables vendors to configure, manage and deliver multiple
-            service categories through a single integrated platform.
-          </p>
         </motion.div>
 
-        {/* Services grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {services.map((service, index) => {
             const IconComponent = service.icon;
-            const isHovered = hoveredIndex === index;
 
             return (
               <motion.div
@@ -134,86 +117,35 @@ export default function Services() {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <motion.div
-                  className="h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-slate-200"
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ duration: 0.25 }}
+                  className="h-full bg-[var(--white)] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-[var(--line)] p-6"
+                  whileHover={{ y: -4 }}
                 >
-                  {/* Icon section with soft gradient background */}
-                  <div
-                    className={`relative h-32 flex items-center justify-center bg-gradient-to-br ${service.lightGradient} overflow-hidden`}
-                  >
-                    {/* Floating accent shapes */}
-                    <motion.div
-                      className={`absolute top-3 right-3 w-16 h-16 rounded-full bg-gradient-to-br ${service.gradient} opacity-10 blur-xl`}
-                      animate={
-                        isHovered
-                          ? { scale: 1.5, opacity: 0.2 }
-                          : { scale: 1, opacity: 0.1 }
-                      }
-                      transition={{ duration: 0.4 }}
-                    />
-                    <motion.div
-                      className={`absolute bottom-3 left-3 w-12 h-12 rounded-full bg-gradient-to-br ${service.gradient} opacity-10 blur-lg`}
-                      animate={
-                        isHovered
-                          ? { scale: 1.3, opacity: 0.15 }
-                          : { scale: 1, opacity: 0.1 }
-                      }
-                      transition={{ duration: 0.4, delay: 0.1 }}
-                    />
-
-                    {/* Icon container */}
-                    <motion.div
-                      className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg`}
-                      animate={
-                        isHovered
-                          ? { scale: 1.1, rotate: 3, y: -2 }
-                          : { scale: 1, rotate: 0, y: 0 }
-                      }
-                      transition={{
-                        duration: 0.3,
-                        type: "spring",
-                        stiffness: 300,
-                      }}
-                    >
-                      <IconComponent className="w-6 h-6 text-white" />
-                    </motion.div>
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-xl bg-[var(--pine)] text-[var(--brass-dim)] flex items-center justify-center mb-4">
+                    <IconComponent className="w-6 h-6" />
                   </div>
 
                   {/* Text content */}
-                  <div className="p-5">
-                    <h3
-                      className={`text-lg font-bold text-slate-800 mb-1.5 group-hover:${service.accentColor} transition-colors`}
-                    >
-                      {service.title}
-                    </h3>
-                    <p className="text-sm text-slate-500 leading-relaxed mb-4">
-                      {service.description}
-                    </p>
+                  <h3 className="text-xl font-bold font-display text-[var(--pine)] mb-2">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-[var(--ink-soft)] leading-relaxed mb-4">
+                    {service.description}
+                  </p>
 
-                    {/* Features with colored dots */}
-                    <div className="space-y-2">
-                      {service.features.map((feature, i) => (
-                        <motion.div
-                          key={i}
-                          className="flex items-center gap-2.5"
-                          initial={{ opacity: 0.6 }}
-                          animate={
-                            isHovered
-                              ? { opacity: 1, x: 2 }
-                              : { opacity: 0.6, x: 0 }
-                          }
-                          transition={{ delay: i * 0.03, duration: 0.2 }}
-                        >
-                          <div
-                            className={`w-1.5 h-1.5 rounded-full ${service.dotColor}`}
-                          />
-                          <span className="text-xs text-slate-600">
-                            {feature}
-                          </span>
-                        </motion.div>
-                      ))}
-                    </div>
+                  {/* Features */}
+                  <div className="space-y-2 border-t border-[var(--kraft-line)] pt-3">
+                    {service.features.map((feature, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--stamp)] shrink-0" />
+                        <span className="text-xs text-[var(--pine-2)] font-mono">
+                          {feature}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               </motion.div>
@@ -228,11 +160,10 @@ export default function Services() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ delay: 0.6 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
-            <Clock className="w-4 h-4 text-primary" />
-            <span className="text-lg text-muted-foreground">
-              Priority turnaround options can be configured across all service
-              categories.
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--kraft)] border border-[var(--kraft-line)]">
+            <Clock className="w-4 h-4 text-[var(--pine)]" />
+            <span className="text-sm font-medium text-[var(--pine)]">
+              Priority turnaround options can be configured across all service categories.
             </span>
           </div>
         </motion.div>

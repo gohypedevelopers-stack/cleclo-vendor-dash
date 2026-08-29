@@ -69,23 +69,12 @@ export default function Footer() {
 
   return (
     <footer
-      className="relative bg-[#0A1628] text-white overflow-hidden"
+      className="relative bg-[var(--steam)] text-[var(--pine)] overflow-hidden border-t border-[var(--line)]"
       ref={containerRef}
     >
-      {/* Background pattern */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 rounded-full blur-[150px]" />
-      </div>
 
       {/* Newsletter section */}
-      <div className="relative border-b border-white/10">
+      <div className="relative border-b border-[var(--line)] bg-[var(--kraft)]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <motion.div
             className="flex flex-col md:flex-row items-center justify-between gap-8"
@@ -94,11 +83,11 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
           >
             <div className="text-center md:text-left">
-              <h3 className="text-2xl md:text-3xl font-bold mb-2">
+              <h3 className="text-2xl md:text-3xl font-bold font-display text-[var(--pine)] mb-2">
                 Insights for Growing Laundry Businesses with{" "}
-                <span className="gradient-text">Cleclo.</span>
+                <span className="text-[var(--stamp)]">Cleclo.</span>
               </h3>
-              <p className="text-white/60">
+              <p className="text-[var(--ink-soft)] font-sans">
                 Platform updates, industry insights and growth tips-delivered
                 occasionally. No spam.
               </p>
@@ -107,18 +96,18 @@ export default function Footer() {
             <div className="flex flex-col gap-3 w-full md:w-auto">
               <form onSubmit={handleSubscribe} className="flex gap-3">
                 <div className="relative flex-1 md:w-80">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--ink-soft)]" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
-                    className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
+                    className="w-full pl-12 pr-4 py-3.5 bg-[var(--white)] border border-[var(--line)] rounded-xl text-[var(--pine)] placeholder:text-[var(--ink-soft)] focus:outline-none focus:border-[var(--pine)] transition-all font-sans text-sm"
                   />
                 </div>
                 <motion.button
                   type="submit"
-                  className="px-6 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl font-semibold flex items-center gap-2 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                  className="btn btn-primary px-6 py-3.5 flex items-center gap-2"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -132,7 +121,7 @@ export default function Footer() {
                   )}
                 </motion.button>
               </form>
-              <div className="flex items-center gap-2 text-sm text-white/60">
+              <div className="flex items-center gap-2 text-xs text-[var(--ink-soft)] font-sans">
                 We respect your privacy. Unsubscribe anytime.
               </div>
             </div>
@@ -152,36 +141,36 @@ export default function Footer() {
           >
             <Link href="/" className="inline-block mb-6">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt="Cleclo Logo"
-                width={140}
-                height={46}
-                className="h-12 w-auto"
+                width={680}
+                height={171}
+                className="h-10 w-auto"
               />
             </Link>
-            <p className="text-white/60 mb-6 leading-relaxed">
+            <p className="text-[var(--ink-soft)] mb-6 leading-relaxed font-sans text-sm">
               Empowering laundry vendors with smart technology to scale their
               business efficiently.
             </p>
 
             {/* Contact info */}
-            <div className="space-y-3 text-sm text-white/60">
+            <div className="space-y-3 text-sm text-[var(--ink-soft)] font-sans">
               <a
                 href="mailto:support@cleclo.com"
-                className="flex items-center gap-3 hover:text-white transition-colors"
+                className="flex items-center gap-3 hover:text-[var(--pine)] transition-colors"
               >
-                <Mail className="w-4 h-4 text-primary" />
+                <Mail className="w-4 h-4 text-[var(--stamp)]" />
                 support@cleclo.com
               </a>
               <a
                 href="tel:+91987654321"
-                className="flex items-center gap-3 hover:text-white transition-colors"
+                className="flex items-center gap-3 hover:text-[var(--pine)] transition-colors"
               >
-                <Phone className="w-4 h-4 text-primary" />
+                <Phone className="w-4 h-4 text-[var(--stamp)]" />
                 +91 98XXX XXXXX
               </a>
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-primary mt-0.5" />
+                <MapPin className="w-4 h-4 text-[var(--stamp)] mt-0.5" />
                 <span>New Delhi</span>
               </div>
             </div>
@@ -194,7 +183,7 @@ export default function Footer() {
                   <motion.a
                     key={social.label}
                     href={social.href}
-                    className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-primary hover:border-primary transition-all"
+                    className="w-10 h-10 rounded-xl bg-[var(--kraft)] border border-[var(--kraft-line)] flex items-center justify-center text-[var(--pine)] hover:bg-[var(--pine)] hover:text-[var(--steam)] transition-all"
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, y: 10 }}
@@ -219,15 +208,15 @@ export default function Footer() {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ delay: 0.15 + columnIndex * 0.05 }}
             >
-              <h4 className="font-bold text-white mb-4">{title}</h4>
+              <h4 className="font-bold font-display text-[var(--pine)] mb-4">{title}</h4>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-white/60 hover:text-white transition-colors text-sm flex items-center gap-2 group"
+                      className="text-[var(--ink-soft)] hover:text-[var(--pine)] transition-colors text-sm flex items-center gap-2 group font-sans"
                     >
-                      <ArrowRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                      <ArrowRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-[var(--stamp)]" />
                       {link.label}
                     </a>
                   </li>
@@ -239,33 +228,35 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="relative border-t border-white/10">
+      <div className="relative border-t border-[var(--line)] bg-[var(--kraft)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
-            className="flex flex-col md:flex-row justify-between items-center gap-4"
+            className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-sans text-[var(--ink-soft)]"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <p className="text-white/40 text-sm">
+            <p>
               © {new Date().getFullYear()} Cleclo. All rights reserved.
             </p>
 
-            <div className="flex items-center gap-6 text-sm text-white/40">
-              <a href="#" className="hover:text-white transition-colors">
+            <div className="flex items-center gap-6">
+              <a href="#" className="hover:text-[var(--pine)] transition-colors">
                 Terms
               </a>
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="#" className="hover:text-[var(--pine)] transition-colors">
                 Privacy
               </a>
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="#" className="hover:text-[var(--pine)] transition-colors">
                 Cookies
               </a>
             </div>
 
             {/* Made with love badge */}
-            <div className="flex items-center gap-2 text-xs text-white/40">
-              <Link href="https://gohypemedia.com">Made by Go Hype Media.</Link>
+            <div>
+              <a href="https://gohypemedia.com" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--pine)] transition-colors">
+                Made by Go Hype Media.
+              </a>
             </div>
           </motion.div>
         </div>

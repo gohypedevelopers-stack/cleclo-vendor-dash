@@ -116,58 +116,40 @@ export default function VendorBenefits() {
   return (
     <section
       id="features"
-      className="py-12 md:py-20 bg-background relative overflow-hidden"
+      className="section wrap bg-[var(--steam)]"
     >
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-40 -left-20 w-72 h-72 bg-primary/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-40 -right-20 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]" />
-      </div>
-
       <div
         ref={containerRef}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative z-10 max-w-7xl mx-auto"
       >
         {/* Section header */}
-        {/* Section header */}
         <motion.div
-          className="text-center mb-16"
+          className="section-head text-center mx-auto flex flex-col items-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.span
-            className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={
-              isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
-            }
-            transition={{ delay: 0.2 }}
-          >
-            Why Choose Us
-          </motion.span>
-          <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold font-heading text-foreground mb-4 break-words">
+          <div className="eyebrow mx-auto">Why Choose Us</div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display text-[var(--pine)] text-center mb-4 max-w-4xl mx-auto">
             Purpose Built Tools to Manage Operations, Increase Efficiency and{" "}
-            <span className="gradient-text">
+            <span className="text-[var(--stamp)]">
               Scale Your Laundry Business with Confidence.
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-            Ideal for independent laundry owners, multi-outlet operators and
-            backend vendors.
+          <p className="lede max-w-4xl mx-auto text-center text-[var(--ink-soft)]">
+            Ideal for independent laundry owners, multi-outlet operators and backend vendors.
           </p>
         </motion.div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 auto-rows-[minmax(280px,auto)]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {benefits.map((benefit, index) => {
             const IconComponent = benefit.icon;
-            const isWide = benefit.size === "large" && index !== 0;
 
             return (
               <motion.div
                 key={index}
-                className={`group relative ${getGridClass(benefit.size, index)}`}
+                className="svc-card group border border-[var(--line)] bg-[var(--white)] rounded-xl p-6 shadow-sm hover:shadow-md transition-all"
                 initial={{ opacity: 0, y: 40, scale: 0.95 }}
                 animate={
                   isInView
@@ -180,59 +162,20 @@ export default function VendorBenefits() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                <div className="h-full bg-card rounded-2xl p-6 md:p-8 border border-border hover:border-primary/30 transition-all duration-500 relative group-hover:shadow-xl group-hover:shadow-primary/5 flex flex-col">
-                  {/* Gradient overlay on hover */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${benefit.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-                  />
-
-                  {/* Animated border gradient */}
-                  <div
-                    className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
-                  >
-                    <div
-                      className={`absolute inset-[1px] rounded-2xl bg-card`}
-                    />
-                    <div
-                      className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${benefit.gradient} opacity-20`}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div
-                    className={`relative z-10 h-full flex ${isWide ? "flex-col md:flex-row md:items-center md:gap-8" : "flex-col"}`}
-                  >
-                    {/* Icon */}
-                    <div
-                      className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${benefit.gradient} ${isWide ? "mb-6 md:mb-0" : "mb-6"} shadow-lg group-hover:scale-110 transition-transform duration-300 shrink-0`}
-                    >
-                      <IconComponent className="w-6 h-6 text-white" />
-                    </div>
-
-                    {/* Text Content */}
-                    <div className="flex-1 flex flex-col">
-                      {/* Title */}
-                      <h3 className="text-xl font-bold font-heading text-foreground mb-3 group-hover:text-primary transition-colors break-words">
-                        {benefit.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-lg leading-relaxed text-muted-foreground break-words flex-grow">
-                        {benefit.description}
-                      </p>
-                    </div>
-
-                    {/* Decorative element */}
-                    <motion.div
-                      className={`absolute bottom-4 right-4 w-24 h-24 bg-gradient-to-br ${benefit.gradient} rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-2xl`}
-                    />
-                  </div>
-
-                  {/* Corner accent */}
-                  <div
-                    className={`absolute -top-12 -right-12 w-32 h-32 bg-gradient-to-br ${benefit.gradient} opacity-[0.08] rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none`}
-                  />
+                {/* Icon */}
+                <div className="svc-icon w-12 h-12 rounded-xl bg-[var(--pine)] text-[var(--brass-dim)] flex items-center justify-center mb-5">
+                  <IconComponent className="w-6 h-6" />
                 </div>
+
+                {/* Title */}
+                <h3 className="text-xl font-bold font-display text-[var(--pine)] mb-3">
+                  {benefit.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm leading-relaxed text-[var(--ink-soft)] font-sans">
+                  {benefit.description}
+                </p>
               </motion.div>
             );
           })}

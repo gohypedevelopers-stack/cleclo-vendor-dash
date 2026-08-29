@@ -55,22 +55,22 @@ const DashboardMockup = () => (
     transition={{ duration: 0.8, delay: 0.5 }}
   >
     {/* Glow effect behind dashboard */}
-    <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-secondary/20 to-transparent rounded-3xl blur-3xl scale-110" />
+    <div className="absolute inset-0 bg-[var(--kraft-line)] rounded-3xl blur-3xl scale-110 opacity-50" />
 
     {/* Main dashboard card */}
     <motion.div
-      className="relative bg-white/10 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-2xl"
+      className="relative bg-[var(--white)] backdrop-blur-xl rounded-2xl p-6 border border-[var(--line)] shadow-2xl"
       animate={{ y: [0, -10, 0] }}
       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     >
       {/* Dashboard header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="flex gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-400" />
-          <div className="w-3 h-3 rounded-full bg-yellow-400" />
-          <div className="w-3 h-3 rounded-full bg-green-400" />
+          <div className="w-3 h-3 rounded-full bg-[var(--stamp)]" />
+          <div className="w-3 h-3 rounded-full bg-[var(--brass)]" />
+          <div className="w-3 h-3 rounded-full bg-[var(--brand-light)]" />
         </div>
-        <div className="flex-1 h-6 bg-white/10 rounded-full" />
+        <div className="flex-1 h-6 bg-[var(--steam-dim)] rounded-full" />
       </div>
 
       {/* Stats row */}
@@ -80,35 +80,35 @@ const DashboardMockup = () => (
             icon: TrendingUp,
             value: "₹2.5L",
             label: "Monthly Revenue",
-            color: "from-green-400 to-emerald-500",
+            color: "bg-[var(--pine)] text-[var(--steam)]",
           },
           {
             icon: Package,
             value: "156",
             label: "Today’s Orders",
-            color: "from-blue-400 to-cyan-500",
+            color: "bg-[var(--brand-dark)] text-[var(--steam)]",
           },
           {
             icon: Truck,
             value: "12",
             label: "Active Deliveries",
-            color: "from-purple-400 to-pink-500",
+            color: "bg-[var(--pine-2)] text-[var(--steam)]",
           },
         ].map((stat, i) => (
           <motion.div
             key={i}
-            className="bg-white/5 rounded-xl p-4 text-center border border-white/10"
+            className="bg-[var(--kraft)] rounded-xl p-4 text-center border border-[var(--kraft-line)]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 + i * 0.1 }}
           >
             <div
-              className={`w-8 h-8 mx-auto mb-2 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center`}
+              className={`w-8 h-8 mx-auto mb-2 rounded-lg ${stat.color} flex items-center justify-center`}
             >
-              <stat.icon className="w-4 h-4 text-white" />
+              <stat.icon className="w-4 h-4" />
             </div>
-            <div className="text-lg font-bold text-white">{stat.value}</div>
-            <div className="text-xs text-white/60">{stat.label}</div>
+            <div className="text-lg font-bold text-[var(--pine)] font-display">{stat.value}</div>
+            <div className="text-xs text-[var(--ink-soft)] font-mono">{stat.label}</div>
           </motion.div>
         ))}
       </div>
@@ -121,22 +121,22 @@ const DashboardMockup = () => (
         ].map((order, i) => (
           <motion.div
             key={i}
-            className="flex items-center justify-between bg-white/5 rounded-lg p-3 border border-white/10"
+            className="flex items-center justify-between bg-[var(--steam)] rounded-lg p-3 border border-[var(--line)]"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.2 + i * 0.1 }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-              <span className="text-white/80 text-sm font-medium">
+              <div className="w-2 h-2 rounded-full bg-[var(--stamp)] animate-pulse" />
+              <span className="text-[var(--pine)] text-sm font-medium font-mono">
                 {order.id}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-white/60 bg-white/10 px-2 py-1 rounded">
+              <span className="text-xs text-[var(--pine)] bg-[var(--kraft)] px-2 py-1 rounded border border-[var(--kraft-line)]">
                 {order.status}
               </span>
-              <span className="text-xs text-white/40">{order.time}</span>
+              <span className="text-xs text-[var(--ink-soft)] font-mono">{order.time}</span>
             </div>
           </motion.div>
         ))}
@@ -145,7 +145,7 @@ const DashboardMockup = () => (
 
     {/* Who It's For Section */}
     <div className="mt-8">
-      <h3 className="text-white/90 font-semibold mb-4 pl-1">Who It's For</h3>
+      <h3 className="text-[var(--pine)] font-semibold mb-4 pl-1 font-display">Who It&apos;s For</h3>
       <div className="grid grid-cols-2 gap-3">
         {[
           "Independent Laundry Owners",
@@ -155,13 +155,13 @@ const DashboardMockup = () => (
         ].map((item, i) => (
           <motion.div
             key={i}
-            className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10"
+            className="flex items-center gap-2 bg-[var(--white)] rounded-lg p-3 border border-[var(--line)] shadow-sm"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.8 + i * 0.1 }}
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_8px_rgba(var(--secondary),0.8)] shrink-0" />
-            <span className="text-xs sm:text-sm font-medium text-white/90">
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--brass)] shrink-0" />
+            <span className="text-xs sm:text-sm font-medium text-[var(--pine)]">
               {item}
             </span>
           </motion.div>
@@ -171,18 +171,18 @@ const DashboardMockup = () => (
 
     {/* Floating notification card */}
     <motion.div
-      className="absolute -top-4 -right-4 bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20 shadow-xl"
+      className="absolute -top-4 -right-4 bg-[var(--white)] rounded-xl p-4 border border-[var(--brass)] shadow-xl"
       initial={{ opacity: 0, scale: 0.8, x: 20 }}
       animate={{ opacity: 1, scale: 1, x: 0 }}
       transition={{ delay: 1.5, duration: 0.5 }}
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
-          <CheckCircle className="w-5 h-5 text-white" />
+        <div className="w-10 h-10 rounded-full bg-[var(--pine)] flex items-center justify-center text-[var(--brass-dim)]">
+          <CheckCircle className="w-5 h-5" />
         </div>
         <div>
-          <div className="text-sm font-semibold text-white">New Order!</div>
-          <div className="text-xs text-white/60">₹450 • 3 items</div>
+          <div className="text-sm font-semibold text-[var(--pine)]">New Order!</div>
+          <div className="text-xs text-[var(--ink-soft)] font-mono">₹450 • 3 items</div>
         </div>
       </div>
     </motion.div>
@@ -216,7 +216,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-[#0A1628] via-[#1a2744] to-[#0f1d32]"
+      className="relative min-h-[90vh] flex items-center overflow-hidden bg-[var(--steam)] text-[var(--ink)]"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -254,13 +254,13 @@ export default function Hero() {
             {/* Headline */}
             <motion.h1
               variants={itemVariants}
-              className="text-3xl sm:text-3xl md:text-5xl font-bold text-white leading-tight"
+              className="text-3xl sm:text-3xl md:text-5xl font-bold text-[var(--pine)] leading-tight font-display"
             >
               Transform Your Laundry Business Into <br /> a&nbsp;
               <span className="relative whitespace-nowrap">
-                <span className="gradient-text">Scalable Profit</span>
+                <span className="text-[var(--stamp)] font-display">Scalable Profit</span>
                 <motion.span
-                  className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r mb-2 from-primary via-secondary to-primary rounded-full"
+                  className="absolute -bottom-2 left-0 w-full h-1 bg-[var(--stamp)] rounded-full"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 1, duration: 0.8 }}
@@ -268,14 +268,14 @@ export default function Hero() {
               </span>
               <br />
               <span className="relative whitespace-nowrap">
-                <span className="gradient-text">Machine</span>
+                <span className="text-[var(--stamp)] font-display">Machine</span>
               </span>
             </motion.h1>
 
             {/* Subheadline */}
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl"
+              className="text-lg md:text-xl text-[var(--ink-soft)] leading-relaxed max-w-xl"
             >
               Automate orders, track operations in real time and manage
               deliveries and payments from one unified platform.
@@ -289,20 +289,19 @@ export default function Hero() {
               <Button
                 asChild
                 size="lg"
-                className="relative overflow-hidden bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white border-0 px-8 py-6 text-lg font-semibold shadow-lg shadow-primary/30 group"
+                className="btn btn-primary"
               >
                 <Link href="/signup">
                   <span className="relative z-10 flex items-center gap-2">
                     <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                     See How Cleclo Works
                   </span>
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 </Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 bg-transparent px-8 py-6 text-lg backdrop-blur-sm group"
+                className="btn btn-ghost"
               >
                 Start Free Trial
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -310,8 +309,8 @@ export default function Hero() {
             </motion.div>
 
             <div className="flex items-center">
-              <p className="text-sm text-white/60">
-                Powering leading laundry partners in Delhi NCR & Tier-1 cities.
+              <p className="text-sm text-[var(--ink-soft)]">
+                Powering leading laundry partners in Delhi NCR &amp; Tier-1 cities.
               </p>
             </div>
 
@@ -325,25 +324,25 @@ export default function Hero() {
                   {[1, 2, 3, 4].map((i) => (
                     <div
                       key={i}
-                      className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary border-2 border-[#0A1628]"
+                      className="w-8 h-8 rounded-full bg-[var(--pine)] border-2 border-[var(--steam)]"
                     />
                   ))}
                 </div>
-                <span className="text-sm text-white/60">5000+ Vendors</span>
+                <span className="text-sm font-medium text-[var(--ink-soft)]">5000+ Vendors</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex gap-0.5">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <svg
                       key={i}
-                      className="w-4 h-4 text-yellow-400 fill-current"
+                      className="w-4 h-4 text-[var(--brass)] fill-current"
                       viewBox="0 0 20 20"
                     >
                       <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                     </svg>
                   ))}
                 </div>
-                <span className="text-sm text-white/60">
+                <span className="text-sm font-medium text-[var(--ink-soft)]">
                   4.9/5 Average Vendor Rating
                 </span>
               </div>
