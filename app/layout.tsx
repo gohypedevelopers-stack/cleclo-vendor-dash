@@ -1,6 +1,6 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Poppins, Quicksand } from "next/font/google";
+import { Poppins, Quicksand, Space_Grotesk, IBM_Plex_Mono, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -15,6 +15,27 @@ const quicksand = Quicksand({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-quicksand",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -49,7 +70,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${quicksand.variable} ${poppins.variable} font-sans antialiased`}
+        className={`${quicksand.variable} ${poppins.variable} ${spaceGrotesk.variable} ${plexMono.variable} ${inter.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         {children}
