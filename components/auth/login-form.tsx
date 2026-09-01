@@ -25,15 +25,15 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full mt-18 max-w-md space-y-8 relative">
+    <div className="w-full max-w-md space-y-8 relative bg-white/90 backdrop-blur-xl p-8 sm:p-10 rounded-3xl border border-[var(--kraft-line)] shadow-xl shadow-[var(--pine)]/5">
       <div className="text-center space-y-2">
-        <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl flex items-center justify-center mb-6 shadow-inner ring-1 ring-green-100 transform hover:rotate-10 transition-transform duration-300">
-          <Store className="w-8 h-8 text-primary drop-shadow-sm" />
+        <div className="mx-auto w-16 h-16 bg-[var(--pine)] text-white rounded-2xl flex items-center justify-center mb-6 shadow-md shadow-[var(--pine)]/20 transform hover:scale-105 transition-transform duration-300">
+          <Store className="w-8 h-8 drop-shadow-sm" />
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-3xl font-bold tracking-tight text-[var(--pine)]">
           Welcome Back
         </h1>
-        <p className="text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
+        <p className="text-sm text-slate-600 max-w-xs mx-auto leading-relaxed font-medium">
           Enter your credentials to access your vendor portal and manage your
           business.
         </p>
@@ -43,12 +43,12 @@ export function LoginForm() {
         <div className="space-y-2">
           <Label
             htmlFor="identifier"
-            className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1"
+            className="text-xs font-bold uppercase tracking-wider text-slate-600 ml-1"
           >
             Mobile or Email
           </Label>
           <div className="relative group">
-            <div className="absolute left-3 top-3.5 text-gray-400 group-focus-within:text-primary transition-colors">
+            <div className="absolute left-3.5 top-3.5 text-slate-400 group-focus-within:text-[var(--stamp)] transition-colors">
               <User className="h-5 w-5" />
             </div>
             <Input
@@ -56,7 +56,7 @@ export function LoginForm() {
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               placeholder="vendor@cleclo.com"
-              className="pl-10 h-12 bg-gray-50/50 border-gray-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all rounded-xl placeholder:text-gray-300"
+              className="pl-11 h-12 bg-white/80 border-[var(--kraft-line)] focus:bg-white focus:border-[var(--stamp)] focus:ring-4 focus:ring-[var(--stamp)]/10 transition-all rounded-xl placeholder:text-slate-400 text-slate-900 font-medium"
             />
           </div>
         </div>
@@ -65,19 +65,19 @@ export function LoginForm() {
           <div className="flex items-center justify-between">
             <Label
               htmlFor="password"
-              className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1"
+              className="text-xs font-bold uppercase tracking-wider text-slate-600 ml-1"
             >
-              Password (or enter OTP if using OTP login)
+              Password
             </Label>
             <a
               href="#"
-              className="text-xs font-semibold text-primary hover:text-primary/80 hover:underline transition-colors"
+              className="text-xs font-semibold text-[var(--stamp)] hover:underline transition-colors"
             >
               Forgot Password?
             </a>
           </div>
           <div className="relative group">
-            <div className="absolute left-3 top-3.5 text-gray-400 group-focus-within:text-primary transition-colors">
+            <div className="absolute left-3.5 top-3.5 text-slate-400 group-focus-within:text-[var(--stamp)] transition-colors">
               <Lock className="h-5 w-5" />
             </div>
             <Input
@@ -86,12 +86,12 @@ export function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
-              className="pl-10 pr-10 h-12 bg-gray-50/50 border-gray-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all rounded-xl placeholder:text-gray-300"
+              className="pl-11 pr-10 h-12 bg-white/80 border-[var(--kraft-line)] focus:bg-white focus:border-[var(--stamp)] focus:ring-4 focus:ring-[var(--stamp)]/10 transition-all rounded-xl placeholder:text-slate-400 text-slate-900 font-medium"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+              className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
             >
               {showPassword ? (
                 <EyeOff className="h-5 w-5" />
@@ -102,12 +102,12 @@ export function LoginForm() {
           </div>
         </div>
 
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4 pt-2">
           <Button
             type="button"
             variant="outline"
             onClick={handleLogin}
-            className="w-full h-12 text-base font-medium border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 bg-white hover:border-gray-300 rounded-xl transition-all"
+            className="w-full h-12 text-sm font-semibold border-[var(--kraft-line)] text-[var(--pine)] hover:bg-[var(--kraft)] hover:border-slate-300 rounded-xl transition-all"
           >
             Get OTP Instead
           </Button>
@@ -115,13 +115,13 @@ export function LoginForm() {
           <Button
             type="button"
             onClick={handleLogin}
-            className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-700 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 rounded-xl"
+            className="w-full h-12 text-sm font-semibold bg-[var(--pine)] hover:bg-[var(--pine)]/90 text-white shadow-lg shadow-[var(--pine)]/20 transition-all duration-300 rounded-xl"
           >
             Secure Login
           </Button>
 
-          <div className="pt-2">
-            <p className="text-xs text-gray-400 text-center">
+          <div className="pt-1">
+            <p className="text-xs text-slate-500 text-center font-medium">
               🔒 Your data is encrypted and securely stored.
             </p>
           </div>
@@ -129,13 +129,13 @@ export function LoginForm() {
       </div>
 
       <div className="text-center pt-2">
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-slate-500 font-medium">
           By logging in, you agree to our{" "}
-          <a href="#" className="underline hover:text-gray-600">
+          <a href="#" className="underline hover:text-slate-800">
             Terms
           </a>{" "}
           and{" "}
-          <a href="#" className="underline hover:text-gray-600">
+          <a href="#" className="underline hover:text-slate-800">
             Privacy Policy
           </a>
         </p>

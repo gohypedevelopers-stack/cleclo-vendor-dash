@@ -66,30 +66,24 @@ export function StatsCards({
         <Card
           key={stat.title}
           className={cn(
-            "cursor-pointer transition-all duration-200 hover:shadow-md border-2",
+            "cursor-pointer transition-all duration-300 hover:shadow-lg rounded-2xl border bg-white/80 backdrop-blur-sm p-1",
             selectedFilter === stat.status
-              ? "border-[#3E8940] bg-emerald-50/10 shadow-md ring-1 ring-[#3E8940]"
-              : "border-transparent hover:border-emerald-100",
+              ? "border-[var(--pine)] bg-[var(--pine)]/5 shadow-md ring-2 ring-[var(--pine)]/20"
+              : "border-[var(--kraft-line)] hover:border-[var(--stamp)]/30",
           )}
           onClick={() =>
             onFilterChange(selectedFilter === stat.status ? null : stat.status)
           }
         >
-          <CardContent className="p-3">
-            <div className="flex items-center justify-between space-y-0">
-              <h3 className="text-sm font-bold text-[#3E8940]">{stat.title}</h3>
-              <div className={`p-2 rounded-lg ${stat.iconBg}`}>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between space-y-0 mb-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--pine)]">{stat.title}</h3>
+              <div className={`p-2 rounded-xl ${stat.iconBg}`}>
                 <stat.icon className={`h-4 w-4 ${stat.iconColor}`} />
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-black">{stat.value}</div>
-              {/* <p className="text-xs font-semibold mt-1 text-[#3E8940]">
-                {stat.trend === "up" && (
-                  <span className=" font-medium select-none">↗ </span>
-                )}
-                {stat.description}
-              </p> */}
+              <div className="text-3xl font-extrabold text-[var(--pine)]">{stat.value}</div>
             </div>
           </CardContent>
         </Card>

@@ -49,14 +49,14 @@ export function RecentOrders({
     : orders;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-4 w-full">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-black">
+    <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-[var(--kraft-line)] shadow-xl shadow-[var(--pine)]/5 p-6 w-full">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-extrabold text-[var(--pine)]">
           {filterStatus ? `${filterStatus} Orders` : "Recent Orders"}
         </h2>
         <Button
           variant="ghost"
-          className="text-sm font-bold text-[#3E8940] hover:text-[#3E8940]/80 hover:bg-emerald-50"
+          className="text-xs font-bold uppercase tracking-wider text-[var(--stamp)] hover:text-[var(--pine)] hover:bg-[var(--kraft)] rounded-xl"
           asChild
         >
           <Link href="/dashboard/orders">View All</Link>

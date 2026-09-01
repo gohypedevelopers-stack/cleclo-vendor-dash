@@ -57,7 +57,7 @@ export function DashboardHeader() {
   const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
 
   return (
-    <header className="flex h-16 w-full justify-between items-center border-b bg-background px-4 md:px-6">
+    <header className="flex h-16 w-full justify-between items-center border-b border-[var(--kraft-line)] bg-white/70 backdrop-blur-md px-4 md:px-6">
       <div className="flex items-center gap-4">
         {/* Mobile: hamburger to open mobile drawer */}
         <Button

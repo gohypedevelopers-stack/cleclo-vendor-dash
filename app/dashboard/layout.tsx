@@ -9,13 +9,13 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-gray-50/50 overflow-hidden">
-        {/* Desktop sidebar — unchanged */}
+      <div className="flex h-screen bg-[var(--kraft)] text-[var(--pine)] font-sans overflow-hidden">
+        {/* Desktop sidebar */}
         <div className="hidden md:block">
           <DashboardSidebar />
         </div>
 
-        {/* Mobile sidebar overlay — only visible on small screens */}
+        {/* Mobile sidebar overlay */}
         <MobileSidebar />
 
         <div className="flex flex-1 flex-col overflow-hidden">

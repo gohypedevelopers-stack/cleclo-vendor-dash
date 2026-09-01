@@ -157,7 +157,7 @@ export function VendorSignupForm() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4">
+    <div className="w-full max-w-5xl mx-auto p-6 sm:p-10 bg-white/90 backdrop-blur-xl rounded-3xl border border-[var(--kraft-line)] shadow-xl shadow-[var(--pine)]/5">
       <div className="w-full">
         <div className="mb-12">
           <div className="flex items-center justify-between">
